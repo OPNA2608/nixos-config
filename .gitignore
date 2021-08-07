@@ -2,5 +2,5 @@
 users/passwords/
 
 # These get hardlinked on the target machine
-configuration.nix
-hardware-configuration.nix
+/configuration.nix
+/hardware-configuration.nix
