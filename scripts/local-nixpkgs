@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+NIXPKGS="$NIXPKGS"
+if [ "x$NIXPKGS" == "x" ]; then
+  NIXPKGS=~/devel/nixpkgs/
+fi
+
+nixos-rebuild -I nixpkgs="$NIXPKGS" "$@"
+

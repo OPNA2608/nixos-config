@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+HOSTNAME=$(hostname)
+MACHINE="$HOSTNAME"
+
+if [ ! "x""$1" == "x" ]; then
+  MACHINE="$1"
+fi
+
+if [[ ! -e "machines/$MACHINE/configuration.nix" ]]; then
+  echo "Missing machines/$MACHINE/configuration.nix" >&2
+  exit 1
+elif [[ ! -e "machines/$MACHINE/hardware-configuration.nix" ]]; then
+  echo "Missing machines/$MACHINE/hardware-configuration.nix" >&2
+  exit 1
+fi
+
+for file in {,hardware-}configuration.nix; do
+	ln -vf {machines/"$MACHINE"/,}"$file"
+done
+

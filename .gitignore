@@ -1,0 +1,6 @@
+# Don't want to push passwords, not even as hashes
+users/passwords/
+
+# These get hardlinked on the target machine
+configuration.nix
+hardware-configuration.nix
