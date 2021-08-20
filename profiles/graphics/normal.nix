@@ -3,6 +3,7 @@
 }:
 
 { lib
+, pkgs
 , ...
 }:
 
@@ -30,4 +31,10 @@ in
 		chosenDriver # Selected driver
 		"vesa" #Fallback
 	];
+	hardware.opengl.extraPackages = lib.optionals (type == "amd") (with pkgs; [
+		amdvlk
+	]);
+	hardware.opengl.extraPackages32 = lib.optionals (type == "amd") (with pkgs; [
+		driversi686Linux.amdvlk
+	]);
 }

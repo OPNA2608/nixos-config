@@ -1,5 +1,6 @@
 { config
 , pkgs
+, lib
 , ...
 }:
 
@@ -89,6 +90,15 @@ in
 		};
 	};
 
+	# https://github.com/NixOS/nixpkgs/issues/126428
+	nixpkgs.config.packageOverrides = pkgs: {
+		steam = pkgs.steam.override {
+			extraProfile = ''
+				unset VK_ICD_FILENAMES
+			'';
+		};
+	};
+
 	programs.steam = {
 		enable = true;
 		remotePlay.openFirewall = true;
@@ -98,7 +108,7 @@ in
 	environment.systemPackages = with pkgs; [
 		(callPackage ./packages/gkraken.nix { })
 		wineWowPackages.full
-		# xboxdrv # don't think that's needed?
+		mangohud
 	];
 
 	services.udev.packages = with pkgs; [
