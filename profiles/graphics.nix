@@ -7,6 +7,8 @@
 , ...
 }:
 
+assert lib.asserts.assertOneOf "type" type [ "amd" "novideo" "intel" ];
+
 let
 	drivers = {
 		amd = {
@@ -23,14 +25,16 @@ let
 		};
 	};
 	typeType = if useAlternative then "alternate" else "main";
-	chosenDriver = drivers.${type}.${typeType};
 in
 
 {
 	services.xserver.videoDrivers = [
-		chosenDriver # Selected driver
-		"vesa" #Fallback
+		drivers.${type}.${typeType} # Selected driver
+		"vesa" # Fallback
 	];
+
+	hardware.opengl.enable = true;
+
 	hardware.opengl.extraPackages = lib.optionals (type == "amd") (with pkgs; [
 		amdvlk
 	]);
