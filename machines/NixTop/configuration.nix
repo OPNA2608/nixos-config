@@ -9,7 +9,7 @@
 ###
 
 let
-	gpuDriver = import ./profiles/graphics {
+	gpuDriver = import ./profiles/graphics.nix {
 		type = "amd";
 		useAlternative = false;
 	};
@@ -91,10 +91,12 @@ in
 	};
 
 	# https://github.com/NixOS/nixpkgs/issues/126428
+	# https://github.com/NixOS/nixpkgs/pull/126435#issuecomment-902394425
 	nixpkgs.config.packageOverrides = pkgs: {
 		steam = pkgs.steam.override {
 			extraProfile = ''
 				unset VK_ICD_FILENAMES
+				export VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json:/run/opengl-driver/share/vulkan/icd.d/amd_icd64.json:/run/opengl-driver-32/share/vulkan/icd.d/amd_icd32.json:/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver-32/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver/share/vulkan/icd.d/lvp_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/lvp_icd.i686.json
 			'';
 		};
 	};
