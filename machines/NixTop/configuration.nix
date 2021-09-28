@@ -29,6 +29,7 @@ in
 {
 	networking.hostName = "NixTop";
 	boot.kernelPackages = pkgs.linuxPackages_latest;
+	hardware.cpu.amd.updateMicrocode = true;
 
 	# NixOS compatibility version
 	system.stateVersion = "20.03";
@@ -39,8 +40,8 @@ in
 
 	imports = [
 		./hardware-configuration.nix
-
 		./profiles/common.nix
+
 		./profiles/desktop.nix
 		gpuDriver
 		grub
