@@ -8,24 +8,6 @@
 ### Configuration for my tower pc at home
 ###
 
-let
-	gpuDriver = import ./profiles/graphics.nix {
-		type = "amd";
-		useAlternative = false;
-	};
-	grub = import ./profiles/grub.nix {
-		supportEfi = true;
-	};
-	virtualisation = import ./profiles/virtualisation.nix {
-		vfioIds = [
-			# novideo GT 710
-			"10de:128b" "10de:0e0f"
-			# novideo GTX 650
-			"10de:0fc6" "10de:0e1b"
-		];
-	};
-in
-
 {
 	networking.hostName = "NixTop";
 	boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -43,11 +25,22 @@ in
 		./profiles/common.nix
 
 		./profiles/desktop.nix
-		gpuDriver
-		grub
+		(import ./profiles/graphics.nix {
+			type = "amd";
+		})
+		(import ./profiles/grub.nix {
+			supportEfi = true;
+		})
 		./profiles/devel.nix
 		./profiles/smart.nix
-		virtualisation
+		(import ./profiles/virtualisation.nix {
+			vfioIds = [
+				# novideo GT 710
+				"10de:128b" "10de:0e0f"
+				# novideo GTX 650
+				"10de:0fc6" "10de:0e1b"
+			];
+		})
 
 		./users/bt1cn.nix
 	];
