@@ -29,7 +29,7 @@ in
 				extraEntries = (if supportEfi then systemSetupEntry else "");
 				default = (if supportEfi then 1 else 0);
 			};
-			efi.canTouchEfiVariables = supportEfi;
+			efi.canTouchEfiVariables = lib.mkDefault supportEfi;
 		};
 		plymouth.enable = config.services.xserver.enable;
 	};
