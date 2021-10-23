@@ -43,6 +43,8 @@
 		})
 
 		./users/bt1cn.nix
+
+		./packages/gkraken_module.nix
 	];
 
 	# Firewall
@@ -107,7 +109,5 @@
 		mangohud
 	];
 
-	services.udev.packages = with pkgs; [
-		(callPackage ./packages/gkraken.nix { })
-	];
+	hardware.gkraken.enable = true;
 }
