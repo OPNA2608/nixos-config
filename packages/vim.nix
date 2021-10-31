@@ -35,16 +35,20 @@ with import <nixpkgs> {
       set softtabstop=2
       set shiftwidth=2
       set noexpandtab
+
+      " statusline
+      set laststatus=2
     '';
     packages.vim_plugins = with pkgs.vimPlugins; {
       start = [
         ale
         editorconfig-vim
-        vim-airline
+        lightline-vim
         vim-better-whitespace
         vim-indent-guides
         vim-logreview
         vim-nix
+        vimsence
         YouCompleteMe
       ];
     };
