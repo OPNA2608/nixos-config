@@ -3,13 +3,7 @@ with import <nixpkgs> {
   config.vim.ftNix = false;
 };
 
-(vim_configurable.override {
-  # Drop when
-  # https://github.com/NixOS/nixpkgs/issues/107548
-  python = lib.debug.traceIf (lib.strings.versionAtLeast system.nixos.release "21.11")
-    "#107548 is fixed, remove this workaround!"
-    pkgs.python3;
-}).customize {
+vim_configurable.customize {
   name = "vim";
   vimrcConfig = {
     customRC = ''
