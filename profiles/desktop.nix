@@ -60,7 +60,8 @@
 		mate.eom
 		mate.atril
 		mpv
-		youtube-dl
+		yt-dlp
+		ffmpeg-full
 
 		# System
 		kitty
