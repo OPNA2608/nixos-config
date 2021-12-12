@@ -43,8 +43,6 @@
 		})
 
 		./users/bt1cn.nix
-
-		./packages/gkraken_module.nix
 	];
 
 	# Firewall
@@ -104,7 +102,7 @@
 
 	# Extra packages
 	environment.systemPackages = with pkgs; [
-		(callPackage ./packages/gkraken.nix { })
+		gkraken
 		wineWowPackages.full
 		mangohud
 	];

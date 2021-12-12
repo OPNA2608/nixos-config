@@ -5,13 +5,21 @@
 
 {
 	fonts = {
-		enableDefaultFonts = true;
+		# Don't want some of them
+		enableDefaultFonts = false;
 		fonts = with pkgs; [
 			corefonts # MS fonts
-			# eventually replace noto-fonts-emoji with openmoji
+			openmoji-color openmoji-black # emojis
 			mplus-outline-fonts # japanese
 			b612 # high legibility
 			input-fonts # maybe new monospaced programming font, but unfree
+
+			# defaults worth keeping
+			dejavu_fonts
+			freefont_ttf
+			gyre-fonts
+			liberation_ttf
+			unifont
 		];
 		fontconfig = {
 			enable = true;
@@ -19,7 +27,7 @@
 			defaultFonts = {
 				serif = lib.mkForce [ "Input Serif Narrow" ];
 				sansSerif = lib.mkForce [ "Input Sans Narrow" ];
-				emoji = lib.mkForce [ "Noto Color Emoji" "Noto Emoji" ];
+				emoji = lib.mkForce [ "OpenMoji Color" "OpenMoji Black" ];
 				monospace = lib.mkForce [ "Input Mono Narrow" ];
 			};
 		};

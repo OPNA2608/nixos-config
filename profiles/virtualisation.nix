@@ -18,7 +18,7 @@
 		enable = true;
 		onBoot = "ignore";
 		onShutdown = "shutdown";
-		qemuPackage = pkgs.qemu_kvm;
+		qemu.package = pkgs.qemu_kvm;
 	};
 	environment.systemPackages = with pkgs; [
 		virt-manager
