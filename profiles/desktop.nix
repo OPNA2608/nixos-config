@@ -22,7 +22,13 @@
 		desktopManager.pantheon.enable = true;
 		displayManager.lightdm = {
 			enable = true;
-			greeters.pantheon.enable = true;
+			# Crash-looping most of the time since 21.11 bump
+			# https://github.com/NixOS/nixpkgs/issues/151609
+			# https://github.com/elementary/greeter/issues/578
+			# greeters.pantheon.enable = true;
+			greeters.gtk.enable = lib.mkForce true;
+			greeter.package = lib.mkForce pkgs.lightdm_gtk_greeter.xgreeters;
+			greeter.name = lib.mkForce "lightdm-gtk-greeter";
 		};
 		libinput.enable = true;
 	};
