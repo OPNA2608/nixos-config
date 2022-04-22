@@ -10,7 +10,8 @@
 
 {
 	networking.hostName = "NixTop";
-	boot.kernelPackages = pkgs.linuxPackages_latest;
+	# boot.kernelPackages = pkgs.linuxPackages_latest;
+	boot.kernelPackages = pkgs.linuxPackages_xanmod;
 	hardware.cpu.amd.updateMicrocode = true;
 
 	# NixOS compatibility version
@@ -43,6 +44,8 @@
 		})
 
 		./users/bt1cn.nix
+
+		./packages/haguichi-module.nix
 	];
 
 	# Firewall
@@ -57,6 +60,7 @@
 			pkgs.steam.meta.description
 			pkgs.steamPackages.steam-runtime.meta.description
 			pkgs.unrar.meta.description
+			pkgs.logmein-hamachi.meta.description
 		]
 	);
 
@@ -108,4 +112,6 @@
 	];
 
 	hardware.gkraken.enable = true;
+
+	programs.haguichi.enable = true;
 }
