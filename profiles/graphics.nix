@@ -36,9 +36,9 @@ in
 	hardware.opengl.enable = true;
 
 	hardware.opengl.extraPackages = lib.optionals (type == "amd") (with pkgs; [
-		amdvlk
+		#amdvlk
 	]);
 	hardware.opengl.extraPackages32 = lib.optionals (type == "amd") (with pkgs; [
-		driversi686Linux.amdvlk
+		#driversi686Linux.amdvlk
 	]);
 }
