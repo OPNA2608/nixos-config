@@ -56,13 +56,11 @@ in
 	# Extra packages
 	environment.systemPackages = with pkgs; [
 		wineWowPackages.full
-    discord
+		discord
 	];
 
 	console.keyMap = "jp106";
 	services.xserver.layout = "jp";
 	boot.loader.grub.gfxmodeEfi = "1366x768";
 	services.chrony.serverOption = "offline";
-
-  services.printing.enable = true;
 }
