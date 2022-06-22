@@ -10,7 +10,7 @@
 		fonts = with pkgs; [
 			corefonts # MS fonts
 			openmoji-color openmoji-black # emojis
-			mplus-outline-fonts # japanese
+			mplus-outline-fonts.osdnRelease # japanese
 			b612 # high legibility
 			input-fonts # maybe new monospaced programming font, but unfree
 
