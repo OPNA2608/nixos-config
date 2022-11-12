@@ -49,8 +49,14 @@
 	];
 
 	# Firewall
-	# networking.firewall.enable = true; # default
+	networking.firewall = {
+		enable = true;
+		allowedUDPPorts = [
+			4230 # Cities: Skylines Multiplayer
+		];
+	};
 
+	# selectively allow unfree stuff
 	nixpkgs.config.allowUnfreePredicate = (pkg:
 		builtins.elem pkg.meta.description [
 			pkgs.corefonts.meta.description
@@ -85,17 +91,6 @@
 			device = "/dev/disk/by-uuid/E09AF9689AF93C1A";
 			fsType = "ntfs";
 			options = fsOptions;
-		};
-	};
-
-	# https://github.com/NixOS/nixpkgs/issues/126428
-	# https://github.com/NixOS/nixpkgs/pull/126435#issuecomment-902394425
-	nixpkgs.config.packageOverrides = pkgs: {
-		steam = pkgs.steam.override {
-			extraProfile = ''
-				unset VK_ICD_FILENAMES
-				export VK_ICD_FILENAMES=/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json:/run/opengl-driver/share/vulkan/icd.d/amd_icd64.json:/run/opengl-driver-32/share/vulkan/icd.d/amd_icd32.json:/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver-32/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver/share/vulkan/icd.d/lvp_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/lvp_icd.i686.json
-			'';
 		};
 	};
 
