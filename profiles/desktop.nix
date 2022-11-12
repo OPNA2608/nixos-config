@@ -71,9 +71,6 @@
 		# https://github.com/NixOS/nixpkgs/issues/120765
 		# also can't easily do the shortcut for builtin screenshooter on Crimvael
 		xfce.xfce4-screenshooter
-
-		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
-		hydroxide
 	]
 	++ lib.optional (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon)
 		palemoon

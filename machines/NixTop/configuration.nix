@@ -109,6 +109,9 @@
 		gkraken
 		wineWowPackages.full
 		mangohud
+
+		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
+		hydroxide
 	];
 
 	hardware.gkraken.enable = true;
