@@ -35,7 +35,6 @@ in
 
 		grub
 		./profiles/devel.nix
-		./profiles/smart.nix
 
 		./users/puna.nix
 	];
