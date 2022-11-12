@@ -64,19 +64,20 @@
 		ffmpeg-full
 
 		# System
-		# kitty # not supported everywhere (OpenGL 3.3)
+		(if pkgs.stdenv.hostPlatform.isx86 then
+			# not supported everywhere (needs OpenGL 3.3)
+			kitty
+		else
+			# fallback
+			sakura
+		)
 		pavucontrol
 		pcmanfm
 		xfce.mousepad
 		# https://github.com/NixOS/nixpkgs/issues/120765
 		# also can't easily do the shortcut for builtin screenshooter on Crimvael
 		xfce.xfce4-screenshooter
-	]
-	++ lib.optional (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon)
+	] ++ lib.optionals (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon) [
 		palemoon
-	++ (if stdenv.hostPlatform.isx86 then
-			kitty
-		else
-			sakura
-	);
+	];
 }
