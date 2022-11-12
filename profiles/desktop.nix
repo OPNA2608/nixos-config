@@ -69,6 +69,7 @@
 			kitty
 		else
 			# fallback
+			# TODO pick a better one (tym?)
 			sakura
 		)
 		pavucontrol
