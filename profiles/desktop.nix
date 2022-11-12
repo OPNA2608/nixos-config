@@ -18,7 +18,6 @@
 
 	services.xserver = {
 		enable = true;
-		useGlamor = true;
 		desktopManager.pantheon.enable = true;
 		displayManager.lightdm = {
 			enable = true;
