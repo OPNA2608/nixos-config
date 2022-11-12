@@ -45,10 +45,12 @@
 	environment.systemPackages = with pkgs; [
 		# Web & Net
 		element-desktop
+		# palemoon # not available everywhere
+		networkmanagerapplet
+
 		# fallback
 		firefox
 		thunderbird
-		networkmanagerapplet
 
 		# Office & AV
 		corrscope
@@ -62,11 +64,12 @@
 		ffmpeg-full
 
 		# System
-		kitty
+		# kitty # not supported everywhere (OpenGL 3.3)
 		pavucontrol
 		pcmanfm
 		xfce.mousepad
 		# https://github.com/NixOS/nixpkgs/issues/120765
+		# also can't easily do the shortcut for builtin screenshooter on Crimvael
 		xfce.xfce4-screenshooter
 
 		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
@@ -74,5 +77,9 @@
 	]
 	++ lib.optional (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon)
 		palemoon
-	;
+	++ (if stdenv.hostPlatform.isx86 then
+			kitty
+		else
+			sakura
+	);
 }
