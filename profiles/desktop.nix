@@ -45,7 +45,6 @@
 	environment.systemPackages = with pkgs; [
 		# Web & Net
 		element-desktop
-		palemoon
 		# fallback
 		firefox
 		thunderbird
@@ -72,5 +71,8 @@
 
 		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
 		hydroxide
-	];
+	]
+	++ lib.optional (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon)
+		palemoon
+	;
 }
