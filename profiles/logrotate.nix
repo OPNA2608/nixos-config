@@ -3,26 +3,24 @@
 }:
 
 let
-	mkRotateConfig = filename: {
-		path = "/var/log/${filename}";
-		user = "root";
-		group = "root";
-		keep = 5;
+	rotateConfig = {
+		create = "0664 root root";
+		rotate = 5;
 		frequency = "monthly";
+	};
+	mkRotateConfigs = logfiles: builtins.listToAttrs (
+		lib.lists.forEach logfiles (logfile:
+			lib.attrsets.nameValuePair "/var/log/${logfile}" rotateConfig
+		)
+	) // lib.debug.traceIf true "Check if rotated logs actually get compressed by this!" {
+		header = {
+			compress = true;
+		};
 	};
 in
 {
 	services.logrotate = {
 		enable = true;
-		paths = {
-			auth-log = mkRotateConfig "auth.log";
-			boot-log = mkRotateConfig "boot.log";
-			daemon-log = mkRotateConfig "daemon.log";
-			syslog = mkRotateConfig "syslog";
-			user-log = mkRotateConfig "user.log";
-		};
-		extraConfig = lib.debug.traceIf true "Check if rotated logs actually get compressed by this!" ''
-			compress
-		'';
+		settings = mkRotateConfigs [ "auth.log" "boot.log" "daemon.log" "syslog" "user.log" ];
 	};
 }
