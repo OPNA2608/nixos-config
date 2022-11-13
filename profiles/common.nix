@@ -38,6 +38,7 @@
 		man-pages
 		networkmanager
 		neofetch
+		nixos-option
 		nkf
 		service-wrapper
 		tree
