@@ -28,7 +28,6 @@ in
 		./hardware-configuration.nix
 
 		<nixos-hardware/pine64/pinebook-pro>
-		#./nixos-hardware/pine64/pinebook-pro
 
 		./profiles/common.nix
 		./profiles/desktop.nix
@@ -48,9 +47,8 @@ in
 	boot.loader.generic-extlinux-compatible.enable = false;
 	boot.loader.efi.canTouchEfiVariables = false;
 
-#	networking.networkmanager.extraConfig = ''
-#managed=false
-#'';
+	# waking from suspend is broken, remove one source of unintentional suspends
+	services.logind.lidSwitch = "lock";
 
 	console.keyMap = "us";
 	services.xserver.layout = "us";
