@@ -69,8 +69,8 @@
 			kitty
 		else
 			# fallback
-			# TODO pick a better one (tym?)
-			sakura
+			# TODO dotfiles in VCS
+			tym
 		)
 		pavucontrol
 		pcmanfm
