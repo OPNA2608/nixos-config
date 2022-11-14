@@ -47,6 +47,9 @@ in
 	boot.loader.generic-extlinux-compatible.enable = false;
 	boot.loader.efi.canTouchEfiVariables = false;
 
+	# Doesn't work?
+	boot.plymouth.enable = lib.mkForce false;
+
 	# waking from suspend is broken, remove one source of unintentional suspends
 	services.logind.lidSwitch = "lock";
 
