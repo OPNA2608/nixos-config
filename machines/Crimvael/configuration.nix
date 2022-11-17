@@ -56,5 +56,9 @@ in
 	console.keyMap = "us";
 	services.xserver.layout = "us";
 	services.chrony.serverOption = "offline";
+
+	environment.systemPackages = with pkgs; [
+		kicad-small
+	];
 }
 
