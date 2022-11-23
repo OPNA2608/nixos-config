@@ -101,6 +101,7 @@
 
 	# Extra packages
 	environment.systemPackages = with pkgs; [
+		discord
 		gkraken
 		wineWowPackages.full
 		mangohud
