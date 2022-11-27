@@ -32,18 +32,19 @@ vim_configurable.customize {
 
       " statusline
       set laststatus=2
+      " only show lightline's mode markers
+      set noshowmode
     '';
     packages.vim_plugins = with pkgs.vimPlugins; {
       start = [
         ale
         editorconfig-vim
         lightline-vim
+        lightline-ale
         vim-better-whitespace
         vim-indent-guides
         vim-logreview
         vim-nix
-        vimsence
-        YouCompleteMe
       ];
     };
   };
