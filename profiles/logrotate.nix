@@ -5,14 +5,14 @@
 let
 	rotateConfig = {
 		create = "0664 root root";
-		rotate = 5;
+		rotate = 3;
 		frequency = "monthly";
 	};
 	mkRotateConfigs = logfiles: builtins.listToAttrs (
 		lib.lists.forEach logfiles (logfile:
 			lib.attrsets.nameValuePair "/var/log/${logfile}" rotateConfig
 		)
-	) // lib.debug.traceIf true "Check if rotated logs actually get compressed by this!" {
+	) // {
 		header = {
 			compress = true;
 		};
