@@ -44,8 +44,6 @@
 		})
 
 		./users/bt1cn.nix
-
-		./packages/haguichi-module.nix
 	];
 
 	# Firewall
@@ -65,6 +63,7 @@
 			pkgs.minecraft.meta.description
 			pkgs.steam.meta.description
 			pkgs.steamPackages.steam-runtime.meta.description
+			pkgs.steamPackages.steam-fhsenv.run.meta.description
 			pkgs.unrar.meta.description
 			pkgs.logmein-hamachi.meta.description
 		]
