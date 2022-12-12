@@ -66,6 +66,7 @@
 			pkgs.steamPackages.steam-fhsenv.run.meta.description
 			pkgs.unrar.meta.description
 			pkgs.logmein-hamachi.meta.description
+			((pkgs.callPackage ./packages/katawa-shoujo.nix {}).meta.description)
 		]
 	);
 
@@ -105,7 +106,13 @@
 		wineWowPackages.full
 		mangohud
 
+		(callPackage ./packages/katawa-shoujo.nix {
+			SDL = SDL_compat;
+		})
+
 		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
+		# hydroxide is now also broken <3
+		# https://github.com/emersion/hydroxide/issues/235
 		hydroxide
 	];
 
