@@ -60,5 +60,9 @@ in
 	environment.systemPackages = with pkgs; [
 		kicad-small
 	];
+
+	nix.settings.extra-platforms = [
+		"armv7l-linux"
+	];
 }
 
