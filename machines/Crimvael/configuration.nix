@@ -9,6 +9,11 @@
 ###
 
 let
+	x64-katawa-shoujo = pkgs.pkgsCross.gnu64.callPackage ./packages/katawa-shoujo.nix { };
+	katawa-shoujo-deps = (pkgs.callPackage ./packages/katawa-shoujo.nix { }).buildInputs;
+	box64-wrapper = pkgs.callPackage ./packages/box-wrapper.nix {
+		x64-bash = pkgs.pkgsCross.gnu64.bash;
+	};
 	grub = import ./profiles/grub.nix {
 		supportEfi = true;
 	};
@@ -42,6 +47,7 @@ in
 		"pinebookpro-ap6256-firmware"
 		"corefonts"
 		"input-fonts"
+		(x64-katawa-shoujo.pname)
 	];
 
 	boot.loader.generic-extlinux-compatible.enable = false;
@@ -59,6 +65,38 @@ in
 
 	environment.systemPackages = with pkgs; [
 		kicad-small
+		(box64-wrapper {
+			pkg = x64-katawa-shoujo;
+			deps = [
+				zlib
+				SDL
+				SDL_image
+				SDL_ttf
+				libGLU
+				libGL
+				glew
+				util-linux
+			] ++ (with xorg; [
+				libX11
+				libXext
+				libXrandr
+				libXrender
+				libxcb
+				libXau
+				libXdmcp
+				libXi
+				libXmu
+				libXt
+				libSM
+				libICE
+			]);
+			# KS has a shell script that sets everything up,we'rehijacking that instead
+			entry = "${pkgs.bash}/bin/bash";
+			extraWrapperArgs = [
+				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
+				"--set RENPY_PLATFORM linux-x86_64"
+			];
+		})
 	];
 
 	nix.settings.extra-platforms = [
