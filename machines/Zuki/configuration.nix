@@ -33,11 +33,20 @@
 	# Firewall
 	# networking.firewall.enable = true; # default
 
-	# GPU accel
-	hardware.raspberry-pi."4".fkms-3d.enable = true;
+	hardware.raspberry-pi."4" = {
+		fkms-3d.enable = true; # GPU accel
+		audio.enable = true;
+	};
 
 	environment.systemPackages = with pkgs; [
 		libraspberrypi
 		raspberrypi-eeprom
 	];
+
+	services.xserver.enable = true;
+	services.xserver.desktopManager.lxqt.enable = true;
+	services.xserver.displayManager.sddm.enable = true;
+
+	sound.enable = true;
+	hardware.pulseaudio.enable = true;
 }
