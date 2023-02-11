@@ -123,5 +123,7 @@ in
 		'';
 	};
 	fonts.fonts = with pkgs; [ font-awesome ];
+
+	zramSwap.enable = true;
 }
 
