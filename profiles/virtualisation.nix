@@ -9,7 +9,7 @@
 	boot = {
 		blacklistedKernelModules = lib.optionals (vfioIds != null) [ "nouveau" ];
 		extraModprobeConfig = lib.optionalString (vfioIds != null) ''
-			optionals vfio.pci ids=${lib.strings.concatStringsSep "," vfioIds}
+			options vfio-pci ids=${lib.strings.concatStringsSep "," vfioIds}
 			softdep drm pre: vfio-pci
 		'';
 		binfmt.emulatedSystems = [ "aarch64-linux" "powerpc64-linux" ];
