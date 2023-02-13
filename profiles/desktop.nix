@@ -59,9 +59,11 @@
 		libreoffice
 		mate.eom
 		mate.atril
-		mpv
 		yt-dlp
 		ffmpeg-full
+		# https://github.com/NixOS/nixpkgs/issues/212995
+		# I didn't ask for pipewire to crash my party
+		(wrapMpv (mpv-unwrapped.override { pipewireSupport = false; }) { })
 
 		# System
 		(if pkgs.stdenv.hostPlatform.isx86 then
