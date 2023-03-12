@@ -22,7 +22,13 @@
 	};
 	services.gpm.enable = true;
 
-	programs.less.enable = true;
+	programs.less = {
+		enable = true;
+		# Between 22.05 and 22.11, lesspipe got too dumb for me:
+		# - missing `strings` from binutils in its wrapping: https://github.com/NixOS/nixpkgs/issues/216087
+		# - sends SJIS files through `strings` which is *so* much worse than printing escapes within text
+		lessopen = lib.mkForce null;
+	};
 
 	networking.networkmanager.enable = true;
 
