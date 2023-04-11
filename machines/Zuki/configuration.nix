@@ -30,8 +30,9 @@
 		./users/puna.nix
 	];
 
-	# Firewall
-	# networking.firewall.enable = true; # default
+	# May lose track of time when disconnected from power, can't get chrony to do huge date jumps
+	services.chrony.enable = lib.mkForce false;
+	services.timesyncd.enable = lib.mkForce true;
 
 	hardware.raspberry-pi."4" = {
 		fkms-3d.enable = true; # GPU accel
@@ -39,8 +40,16 @@
 	};
 
 	environment.systemPackages = with pkgs; [
+		# Raspi-specific
 		libraspberrypi
 		raspberrypi-eeprom
+
+		# Miriway
+		grim
+		waybar
+		wbg
+		synapse
+		tym
 	];
 
 	services.xserver.enable = true;
@@ -49,4 +58,10 @@
 
 	sound.enable = true;
 	hardware.pulseaudio.enable = true;
+
+	# Miriway
+	programs.miriway.enable = true;
+	fonts.fonts = with pkgs; [ font-awesome ];
+	# ...but don't default to it, due to https://github.com/MirServer/mir/issues/2837
+	services.xserver.displayManager.defaultSession = lib.mkForce "lxqt";
 }
