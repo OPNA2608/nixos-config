@@ -20,7 +20,6 @@ in
 		loader = {
 			grub = {
 				enable = true;
-				version = 2;
 				# Only needed for BIOS iirc?
 				device = if (!supportEfi && device != null) then device else "nodev";
 				efiSupport = supportEfi;

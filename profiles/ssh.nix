@@ -5,8 +5,10 @@
 {
 	services.openssh = {
 		enable = true;
-		passwordAuthentication = lib.mkDefault true;
-		permitRootLogin = "no";
-		forwardX11 = true;
+		settings = {
+			PasswordAuthentication = lib.mkDefault true;
+			PermitRootLogin = "no";
+			X11Forwarding = true;
+		};
 	};
 }

@@ -80,7 +80,7 @@
 		# https://github.com/NixOS/nixpkgs/issues/120765
 		# also can't easily do the shortcut for builtin screenshooter on Crimvael
 		xfce.xfce4-screenshooter
-	] ++ lib.optionals (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon) [
-		palemoon
+	] ++ lib.optionals (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon-bin) [
+		palemoon-bin
 	];
 }

@@ -18,8 +18,10 @@
 	system.stateVersion = "20.03";
 
 	# Build cores and jobs
-	nix.maxJobs    = 4;
-	nix.buildCores = 6;
+	nix.settings = {
+		max-jobs = 4;
+		cores = 6;
+	};
 
 	imports = [
 		./hardware-configuration.nix
