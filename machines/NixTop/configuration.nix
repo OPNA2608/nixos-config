@@ -28,6 +28,7 @@
 		./profiles/common.nix
 
 		./profiles/desktop.nix
+		./profiles/wayland.nix
 		(import ./profiles/graphics.nix {
 			type = "amd";
 		})
