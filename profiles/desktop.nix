@@ -45,6 +45,7 @@
 	environment.systemPackages = with pkgs; [
 		# Web & Net
 		element-desktop
+		revolt-desktop
 		# palemoon # not available everywhere
 		networkmanagerapplet
 
