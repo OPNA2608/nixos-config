@@ -8,7 +8,14 @@
 ### Configuration for my tower pc at home
 ###
 
-{
+let
+  nixpkgs-coolercontrol-src = builtins.fetchTarball {
+    # https://github.com/codifryed/nixpkgs/tree/coolercontrol-0.17.0
+    url = "https://github.com/codifryed/nixpkgs/archive/ed254575f639bc89d2b7856c603d46121f01bbc9.tar.gz";
+    sha256 = "09jkms9a4yikipmzpvmy3ybisw0chpf8zlp0ss9sch3262y72wkc";
+  };
+  nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
+in {
 	networking.hostName = "NixTop";
 	# boot.kernelPackages = pkgs.linuxPackages_latest;
 	boot.kernelPackages = pkgs.linuxPackages_xanmod;
@@ -46,8 +53,18 @@
 			];
 		})
 
+		(nixpkgs-coolercontrol-src + "/nixos/modules/programs/coolercontrol.nix")
+
 		./users/bt1cn.nix
 	];
+
+	nixpkgs.overlays = [
+		(self: super: {
+			inherit (nixpkgs-coolercontrol) coolercontrol;
+		})
+	];
+
+	programs.coolercontrol.enable = true;
 
 	# Firewall
 	networking.firewall = {
