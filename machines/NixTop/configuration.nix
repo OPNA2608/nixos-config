@@ -64,8 +64,6 @@ in {
 		})
 	];
 
-	programs.coolercontrol.enable = true;
-
 	# Firewall
 	networking.firewall = {
 		enable = true;
@@ -136,7 +134,14 @@ in {
 		hydroxide
 	];
 
+	programs.coolercontrol.enable = true;
+
+	# To-be-replaced by the above once merged
 	hardware.gkraken.enable = true;
 
 	programs.haguichi.enable = true;
+
+	services.udev.packages = [
+		(pkgs.callPackage ./packages/grundig-hw.nix { })
+	];
 }
