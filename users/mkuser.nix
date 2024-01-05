@@ -1,5 +1,5 @@
-{ id ? null
-, name ? null
+{ id
+, name
 }:
 
 { pkgs
