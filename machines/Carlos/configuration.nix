@@ -16,13 +16,14 @@ let
   };
   nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
-	networking.hostName = "NixTop";
-	# boot.kernelPackages = pkgs.linuxPackages_latest;
-	boot.kernelPackages = pkgs.linuxPackages_xanmod;
+	networking.hostName = "Carlos";
+	boot.kernelPackages = pkgs.linuxPackages_latest;
+	# boot.kernelPackages = pkgs.linuxPackages_xanmod;
+
 	hardware.cpu.amd.updateMicrocode = true;
 
 	# NixOS compatibility version
-	system.stateVersion = "20.03";
+	system.stateVersion = "23.11";
 
 	# Build cores and jobs
 	nix.settings = {
@@ -55,7 +56,7 @@ in {
 
 		(nixpkgs-coolercontrol-src + "/nixos/modules/programs/coolercontrol.nix")
 
-		./users/bt1cn.nix
+		./users/puna.nix
 	];
 
 	nixpkgs.overlays = [
