@@ -10,12 +10,16 @@ fi
 if [[ ! -e "machines/$MACHINE/configuration.nix" ]]; then
   echo "Missing machines/$MACHINE/configuration.nix" >&2
   exit 1
-elif [[ ! -e "machines/$MACHINE/hardware-configuration.nix" ]]; then
-  echo "Missing machines/$MACHINE/hardware-configuration.nix" >&2
-  exit 1
 fi
 
-for file in {,hardware-}configuration.nix; do
-	ln -vf {machines/"$MACHINE"/,}"$file"
-done
+cat <<EOF | tee > configuration.nix
+{ ...
+}:
+
+{
+	imports = [
+		./machines/$MACHINE/configuration.nix
+	];
+}
+EOF
 

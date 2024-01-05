@@ -33,19 +33,19 @@ in {
 
 	imports = [
 		./hardware-configuration.nix
-		./profiles/common.nix
+		../../profiles/common.nix
 
-		./profiles/desktop.nix
-		./profiles/wayland.nix
-		(import ./profiles/graphics.nix {
+		../../profiles/desktop.nix
+		../../profiles/wayland.nix
+		(import ../../profiles/graphics.nix {
 			type = "amd";
 		})
-		(import ./profiles/grub.nix {
+		(import ../../profiles/grub.nix {
 			supportEfi = true;
 		})
-		./profiles/devel.nix
-		./profiles/smart.nix
-		(import ./profiles/virtualisation.nix {
+		../../profiles/devel.nix
+		../../profiles/smart.nix
+		(import ../../profiles/virtualisation.nix {
 			vfioIds = [
 				# novideo GT 710
 				"10de:128b" "10de:0e0f"
@@ -56,7 +56,7 @@ in {
 
 		(nixpkgs-coolercontrol-src + "/nixos/modules/programs/coolercontrol.nix")
 
-		./users/puna.nix
+		../../users/puna.nix
 	];
 
 	nixpkgs.overlays = [
@@ -85,7 +85,7 @@ in {
 			pkgs.steamPackages.steam-fhsenv.run.meta.description
 			pkgs.unrar.meta.description
 			pkgs.logmein-hamachi.meta.description
-			((pkgs.callPackage ./packages/katawa-shoujo.nix {}).meta.description)
+			((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
 		]
 	);
 
@@ -125,7 +125,7 @@ in {
 		wineWowPackages.full
 		mangohud
 
-		(callPackage ./packages/katawa-shoujo.nix {
+		(callPackage ../../packages/katawa-shoujo.nix {
 			SDL = SDL_compat;
 		})
 
@@ -143,6 +143,6 @@ in {
 	programs.haguichi.enable = true;
 
 	services.udev.packages = [
-		(pkgs.callPackage ./packages/grundig-hw.nix { })
+		(pkgs.callPackage ../../packages/grundig-hw.nix { })
 	];
 }
