@@ -11,8 +11,8 @@
 let
   nixpkgs-coolercontrol-src = builtins.fetchTarball {
     # https://github.com/codifryed/nixpkgs/tree/coolercontrol-0.17.0
-    url = "https://github.com/codifryed/nixpkgs/archive/ed254575f639bc89d2b7856c603d46121f01bbc9.tar.gz";
-    sha256 = "09jkms9a4yikipmzpvmy3ybisw0chpf8zlp0ss9sch3262y72wkc";
+    url = "https://github.com/codifryed/nixpkgs/archive/81b6b67212eeccc680b1649b625e930e6881c210.tar.gz";
+    sha256 = "12kzm8vyfg4cbbc5q0ywahhlh3zd11sw565k54m4rsz81dh0i800";
   };
   nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
