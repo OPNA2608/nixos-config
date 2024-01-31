@@ -11,14 +11,15 @@
 let
   nixpkgs-coolercontrol-src = builtins.fetchTarball {
     # https://github.com/codifryed/nixpkgs/tree/coolercontrol-0.17.0
-    url = "https://github.com/codifryed/nixpkgs/archive/81b6b67212eeccc680b1649b625e930e6881c210.tar.gz";
-    sha256 = "12kzm8vyfg4cbbc5q0ywahhlh3zd11sw565k54m4rsz81dh0i800";
+    url = "https://github.com/codifryed/nixpkgs/archive/d8119b6186aca4aa332ffdd2b7f8aeb8c3163bfd.tar.gz";
+    sha256 = "1a6ps94564448kx8aikrh1jgcs3p16kc39z4a44kvfqpakrg28wa";
   };
   nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
 	networking.hostName = "Carlos";
-	boot.kernelPackages = pkgs.linuxPackages_latest;
-	# boot.kernelPackages = pkgs.linuxPackages_xanmod;
+	#boot.kernelPackages = pkgs.linuxPackages_latest;
+	# Black screen on 6.7.0
+	boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_6;
 
 	hardware.cpu.amd.updateMicrocode = true;
 
@@ -60,8 +61,28 @@ in {
 	];
 
 	nixpkgs.overlays = [
-		(self: super: {
-			inherit (nixpkgs-coolercontrol) coolercontrol;
+		(final: prev: {
+			coolercontrol = {
+				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold coolercontrol-liqctld;
+				coolercontrol-gui = nixpkgs-coolercontrol.coolercontrol.coolercontrol-gui.overrideAttrs (oa: {
+					nativeBuildInputs = oa.nativeBuildInputs ++ (with pkgs; [
+						makeWrapper
+					]);
+					postInstall = oa.postInstall + ''
+						wrapProgram $out/bin/coolercontrol \
+							--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath (with nixpkgs-coolercontrol; [ libappindicator ])}
+					'';
+				});
+			};
+		})
+
+		(final: prev: {
+			steam = prev.steam.override {
+				extraLibraries = pkgs: with pkgs; [
+					#gperftools
+					pkgsi686Linux.gperftools
+				];
+			};
 		})
 	];
 
