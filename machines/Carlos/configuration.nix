@@ -51,6 +51,9 @@ in {
 			];
 		})
 
+		# While working on ngipkgs
+		../../profiles/ngipkgs-cachix.nix
+
 		(nixpkgs-coolercontrol-src + "/nixos/modules/programs/coolercontrol.nix")
 
 		../../users/puna.nix
