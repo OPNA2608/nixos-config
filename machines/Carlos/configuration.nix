@@ -9,11 +9,7 @@
 ###
 
 let
-  nixpkgs-coolercontrol-src = builtins.fetchTarball {
-    # https://github.com/codifryed/nixpkgs/tree/coolercontrol-0.17.0
-    url = "https://github.com/codifryed/nixpkgs/archive/d8119b6186aca4aa332ffdd2b7f8aeb8c3163bfd.tar.gz";
-    sha256 = "1a6ps94564448kx8aikrh1jgcs3p16kc39z4a44kvfqpakrg28wa";
-  };
+  nixpkgs-coolercontrol-src = <unstable>;
   nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
 	networking.hostName = "Carlos";
@@ -62,6 +58,24 @@ in {
 
 	nixpkgs.overlays = [
 		(final: prev: {
+			coolercontrol = let
+				inherit (nixpkgs-coolercontrol.coolercontrol.coolercontrold) version src;
+				meta = with final.lib; {
+					description = "Monitor and control your cooling devices";
+					homepage = "https://gitlab.com/coolercontrol/coolercontrol";
+					license = licenses.gpl3Plus;
+					platforms = [ "x86_64-linux" ];
+					maintainers = with maintainers; [ codifryed OPNA2608 ];
+				};
+				applySharedDetails = drv: drv { inherit version src meta; };
+			in {
+				coolercontrol-ui-data = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-ui-data.nix") { });
+				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold;
+				coolercontrol-liqctld = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-liqctld.nix") { });
+				coolercontrol-gui = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-gui.nix") { });
+			};
+			##inherit (nixpkgs-coolercontrol) coolercontrol;
+			/*
 			coolercontrol = {
 				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold coolercontrol-liqctld;
 				coolercontrol-gui = nixpkgs-coolercontrol.coolercontrol.coolercontrol-gui.overrideAttrs (oa: {
@@ -74,6 +88,7 @@ in {
 					'';
 				});
 			};
+			*/
 		})
 
 		(final: prev: {
@@ -142,7 +157,6 @@ in {
 	# Extra packages
 	environment.systemPackages = with pkgs; [
 		discord
-		gkraken
 		wineWowPackages.full
 		mangohud
 
@@ -156,10 +170,9 @@ in {
 		hydroxide
 	];
 
-	programs.coolercontrol.enable = true;
-
-	# To-be-replaced by the above once merged
-	hardware.gkraken.enable = true;
+	programs.coolercontrol = {
+		enable = true;
+	};
 
 	programs.haguichi.enable = true;
 
