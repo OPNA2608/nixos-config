@@ -9,8 +9,8 @@
 ###
 
 let
-  nixpkgs-coolercontrol-src = <unstable>;
-  nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
+	nixpkgs-coolercontrol-src = <unstable>;
+	nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
 	networking.hostName = "Carlos";
 	#boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -54,8 +54,6 @@ in {
 		# While working on ngipkgs
 		../../profiles/ngipkgs-cachix.nix
 
-		(nixpkgs-coolercontrol-src + "/nixos/modules/programs/coolercontrol.nix")
-
 		../../users/puna.nix
 	];
 
@@ -94,12 +92,28 @@ in {
 			*/
 		})
 
+		# 32-bit Valve game fix
 		(final: prev: {
 			steam = prev.steam.override {
 				extraLibraries = pkgs: with pkgs; [
 					#gperftools
 					pkgsi686Linux.gperftools
 				];
+			};
+		})
+
+		# Lomiri + Pantheon fix
+		(final: prev: {
+			lomiri = prev.lomiri // {
+				lomiri-session = prev.lomiri.lomiri-session.overrideAttrs (oa: {
+					patches = (oa.patches or []) ++ [
+						# https://github.com/NixOS/nixpkgs/pull/317000
+						(pkgs.fetchpatch {
+							url = "https://github.com/NixOS/nixpkgs/raw/ad9b2ad91250d88cae94cebf29797926d3bc274a/pkgs/desktops/lomiri/data/lomiri-session/1001-Unset-QT_QPA_PLATFORMTHEME.patch";
+							hash = "sha256-tplzYvyIkUpHj0OaVgGK6xqN+iRI4YJLS16LaMJ2iXo=";
+						})
+					];
+				});
 			};
 		})
 	];
@@ -182,4 +196,11 @@ in {
 	services.udev.packages = [
 		(pkgs.callPackage ../../packages/grundig-hw.nix { })
 	];
+
+	services.desktopManager.lomiri.enable = true;
+	services.xserver.displayManager.defaultSession = lib.mkForce "pantheon";
+	services.xserver.displayManager.lightdm.greeters = {
+		pantheon.enable = lib.mkForce false;
+		lomiri.enable = lib.mkForce true;
+	};
 }
