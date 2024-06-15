@@ -9,6 +9,13 @@
 ###
 
 let
+	/*
+	nixpkgs-coolercontrol-src = builtins.fetchTarball {
+		# https://github.com/codifryed/nixpkgs/tree/coolercontrol
+		url = "https://github.com/codifryed/nixpkgs/archive/22b1e2447b0e6d8075188c52e492f5542e3e319c.tar.gz";
+		sha256 = "1f933r8946q1sqqd5cv3my77c5av66kgqdh0b56y7m3802aga4v5";
+	};
+	*/
 	nixpkgs-coolercontrol-src = <unstable>;
 	nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
@@ -75,21 +82,6 @@ in {
 				coolercontrol-liqctld = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-liqctld.nix") { });
 				coolercontrol-gui = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-gui.nix") { });
 			};
-			##inherit (nixpkgs-coolercontrol) coolercontrol;
-			/*
-			coolercontrol = {
-				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold coolercontrol-liqctld;
-				coolercontrol-gui = nixpkgs-coolercontrol.coolercontrol.coolercontrol-gui.overrideAttrs (oa: {
-					nativeBuildInputs = oa.nativeBuildInputs ++ (with pkgs; [
-						makeWrapper
-					]);
-					postInstall = oa.postInstall + ''
-						wrapProgram $out/bin/coolercontrol \
-							--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath (with nixpkgs-coolercontrol; [ libappindicator ])}
-					'';
-				});
-			};
-			*/
 		})
 
 		# 32-bit Valve game fix
@@ -155,8 +147,8 @@ in {
 			options = fsOptions;
 		};
 		"/mnt/perm/D2" = {
-			device = "/dev/disk/by-uuid/7F0015800BEEA225";
-			fsType = "ntfs";
+			device = "/dev/disk/by-uuid/4356fecd-af37-4213-9826-ed5d01b5ff5e";
+			fsType = "xfs";
 			options = fsOptions;
 		};
 		"/mnt/perm/Win10" = {
@@ -185,6 +177,9 @@ in {
 		# hydroxide is now also broken <3
 		# https://github.com/emersion/hydroxide/issues/235
 		hydroxide
+
+		# Connecting to my tablet
+		rcu
 	];
 
 	programs.coolercontrol = {
