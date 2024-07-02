@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   version = "1.3.1";
 
   src = fetchzip {
-    url = "http://dl.katawa-shoujo.com/gold_${version}/%5b4ls%5d_katawa_shoujo_${version}-%5blinux-x86%5d%5b18161880%5d.tar.bz2";
+    url = "http://cdn.fhs.sh/ks/bin/gold_${version}/%5b4ls%5d_katawa_shoujo_${version}-%5blinux-x86%5d%5b18161880%5d.tar.bz2";
     hash = "sha256-7qAbzlT/e0lcN+w0vxd60QBCANuHCZ4s/kziRUKYTmA=";
   };
 
