@@ -136,25 +136,28 @@ in {
 
 	# extra filesystems
 	fileSystems = let
-		fsOptions = [
-			"rw" "async" "nofail" "nouser" "errors=remount-ro"
-			"dmask=0003" "fmask=0113" "gid=${toString config.users.groups.users.gid}"
-		];
+		fsOptions = fs:
+			[
+				"rw" "async" "nofail" "nouser"
+			] ++ lib.optionals (fs == "ntfs") [
+				"errors=remount-ro" "dmask=0003" "fmask=0113"
+				"gid=${toString config.users.groups.users.gid}"
+			];
 	in {
-		"/mnt/perm/D1" = {
+		"/mnt/perm/D1" = rec {
 			device = "/dev/disk/by-uuid/011621FA6BC2A92F";
 			fsType = "ntfs";
-			options = fsOptions;
+			options = fsOptions fsType;
 		};
-		"/mnt/perm/D2" = {
+		"/mnt/perm/D2" = rec {
 			device = "/dev/disk/by-uuid/4356fecd-af37-4213-9826-ed5d01b5ff5e";
 			fsType = "xfs";
-			options = fsOptions;
+			options = fsOptions fsType;
 		};
-		"/mnt/perm/Win10" = {
+		"/mnt/perm/Win10" = rec {
 			device = "/dev/disk/by-uuid/E09AF9689AF93C1A";
 			fsType = "ntfs";
-			options = fsOptions;
+			options = fsOptions fsType;
 		};
 	};
 
