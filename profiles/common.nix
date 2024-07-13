@@ -52,5 +52,7 @@
 		wget
 		zip unzip
 	];
+
+	nix.package = pkgs.lix;
 }
 
