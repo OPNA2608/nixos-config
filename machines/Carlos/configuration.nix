@@ -93,21 +93,6 @@ in {
 				];
 			};
 		})
-
-		# Lomiri + Pantheon fix
-		(final: prev: {
-			lomiri = prev.lomiri // {
-				lomiri-session = prev.lomiri.lomiri-session.overrideAttrs (oa: {
-					patches = (oa.patches or []) ++ [
-						# https://github.com/NixOS/nixpkgs/pull/317000
-						(pkgs.fetchpatch {
-							url = "https://github.com/NixOS/nixpkgs/raw/ad9b2ad91250d88cae94cebf29797926d3bc274a/pkgs/desktops/lomiri/data/lomiri-session/1001-Unset-QT_QPA_PLATFORMTHEME.patch";
-							hash = "sha256-tplzYvyIkUpHj0OaVgGK6xqN+iRI4YJLS16LaMJ2iXo=";
-						})
-					];
-				});
-			};
-		})
 	];
 
 	# Firewall
@@ -176,10 +161,7 @@ in {
 			SDL = SDL_compat;
 		})
 
-		# CLI-only protonmail bridge doesn't work for me, i need hydroxide :/
-		# hydroxide is now also broken <3
-		# https://github.com/emersion/hydroxide/issues/235
-		hydroxide
+		protonmail-bridge
 
 		# Connecting to my tablet
 		rcu
@@ -201,4 +183,8 @@ in {
 		pantheon.enable = lib.mkForce false;
 		lomiri.enable = lib.mkForce true;
 	};
+
+	# AusweisApp
+	programs.ausweisapp.enable = true;
+	services.pcscd.enable = true;
 }
