@@ -6,7 +6,7 @@
 	environment.systemPackages = with pkgs; [
 		gitFull
 		nix-index
-		nixpkgs-fmt
+		nixfmt-rfc-style
 		nixpkgs-review
 	];
 }
