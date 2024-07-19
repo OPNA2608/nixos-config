@@ -23,6 +23,6 @@ in
 		passwordFile = mkPasswordPath id;
 		isNormalUser = true;
 		shell = pkgs.fish;
-		extraGroups = lib.mkDefault [ "wheel" "networkmanager" ];
+		extraGroups = [ "wheel" "networkmanager" ];
 	};
 }
