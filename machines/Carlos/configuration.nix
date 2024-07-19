@@ -165,6 +165,10 @@ in {
 
 		# Connecting to my tablet
 		rcu
+
+		# For Lomiri upstream submissions, needs to be latest one
+		nixpkgs-coolercontrol.clickable
+		xorg.xhost
 	];
 
 	programs.coolercontrol = {
@@ -187,4 +191,8 @@ in {
 	# AusweisApp
 	programs.ausweisapp.enable = true;
 	services.pcscd.enable = true;
+
+	# For clickable to work
+	virtualisation.docker.enable = true;
+	users.users.puna.extraGroups = [ "docker" ];
 }
