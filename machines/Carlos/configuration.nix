@@ -88,7 +88,6 @@ in {
 		(final: prev: {
 			steam = prev.steam.override {
 				extraLibraries = pkgs: with pkgs; [
-					#gperftools
 					pkgsi686Linux.gperftools
 				];
 			};
@@ -99,7 +98,7 @@ in {
 	networking.firewall = {
 		enable = true;
 		allowedUDPPorts = [
-			4230 # Cities: Skylines Multiplayer
+			#4230 # Cities: Skylines Multiplayer
 		];
 	};
 
@@ -115,7 +114,7 @@ in {
 			pkgs.steamPackages.steam-fhsenv.run.meta.description
 			pkgs.unrar.meta.description
 			pkgs.logmein-hamachi.meta.description
-			((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
+			#((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
 		]
 	);
 
@@ -157,9 +156,11 @@ in {
 		wineWowPackages.full
 		mangohud
 
+		/*
 		(callPackage ../../packages/katawa-shoujo.nix {
 			SDL = SDL_compat;
 		})
+		*/
 
 		protonmail-bridge
 
@@ -177,10 +178,6 @@ in {
 
 	programs.haguichi.enable = true;
 
-	services.udev.packages = [
-		(pkgs.callPackage ../../packages/grundig-hw.nix { })
-	];
-
 	services.desktopManager.lomiri.enable = true;
 	services.xserver.displayManager.defaultSession = lib.mkForce "pantheon";
 	services.xserver.displayManager.lightdm.greeters = {
@@ -195,4 +192,7 @@ in {
 	# For clickable to work
 	virtualisation.docker.enable = true;
 	users.users.puna.extraGroups = [ "docker" ];
+
+	# GnuPG
+	programs.gnupg.agent.enable = true;
 }
