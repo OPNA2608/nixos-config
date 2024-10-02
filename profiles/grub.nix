@@ -3,6 +3,7 @@
 }:
 { config
 , lib
+, pkgs
 , ...
 }:
 
@@ -26,7 +27,8 @@ in
 				useOSProber = lib.mkDefault false;
 				extraEntriesBeforeNixOS = supportEfi;
 				extraEntries = (if supportEfi then systemSetupEntry else "");
-				default = (if supportEfi then 1 else 0);
+				default = (if supportEfi then 1 else 0) + (if config.boot.loader.grub.memtest86.enable then 1 else 0);
+				memtest86.enable = pkgs.stdenv.hostPlatform.isx86;
 			};
 			efi.canTouchEfiVariables = lib.mkDefault supportEfi;
 		};
