@@ -192,7 +192,4 @@ in {
 	# For clickable to work
 	virtualisation.docker.enable = true;
 	users.users.puna.extraGroups = [ "docker" ];
-
-	# GnuPG
-	programs.gnupg.agent.enable = true;
 }
