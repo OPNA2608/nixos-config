@@ -9,17 +9,17 @@
 ###
 
 let
-	x64-katawa-shoujo = (pkgs.pkgsCross.gnu64.callPackage ./packages/katawa-shoujo.nix {
+	x64-katawa-shoujo = (pkgs.pkgsCross.gnu64.callPackage ../../packages/katawa-shoujo.nix {
 		devendorImageLibs = false;
 	}).overrideAttrs (oa: {
 		buildInputs = [];
 		dontAutoPatchelf = true;
 	});
-#	katawa-shoujo-deps = (pkgs.callPackage ./packages/katawa-shoujo.nix { }).buildInputs;
-	box64-wrapper = pkgs.callPackage ./packages/box-wrapper.nix {
+	katawa-shoujo-deps = (pkgs.callPackage ../../packages/katawa-shoujo.nix { }).buildInputs;
+	box64-wrapper = pkgs.callPackage ../../packages/box-wrapper.nix {
 		x64-bash = pkgs.pkgsCross.gnu64.bash;
 	};
-	grub = import ./profiles/grub.nix {
+	grub = import ../../profiles/grub.nix {
 		supportEfi = true;
 	};
 in
@@ -39,14 +39,18 @@ in
 
 		<nixos-hardware/pine64/pinebook-pro>
 
-		./profiles/common.nix
-		./profiles/desktop.nix
+		../../profiles/common.nix
+		../../profiles/desktop.nix
 
 		grub
-		./profiles/devel.nix
+		../../profiles/devel.nix
 
-		./users/puna.nix
+		../../users/puna.nix
 	];
+
+	# May lose track of time when disconnected from power, can't get chrony to do huge date jumps
+	services.chrony.enable = lib.mkForce false;
+	services.timesyncd.enable = lib.mkForce true;
 
 	nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
 		"pinebookpro-ap6256-firmware"
@@ -57,6 +61,8 @@ in
 
 	boot.loader.generic-extlinux-compatible.enable = false;
 	boot.loader.efi.canTouchEfiVariables = false;
+	# To avoid the missing symbol 'grub_is_shim_lock_enabled' error at boot time
+	boot.loader.grub.efiInstallAsRemovable = true;
 
 	# Doesn't work?
 	boot.plymouth.enable = lib.mkForce false;
@@ -75,33 +81,18 @@ in
 				freetype
 				zlib
 				SDL_compat
-#				SDL
-#				SDL_image
-#				SDL_ttf
 				libGLU
 				libGL
-#				glew
-#				util-linux
 			] ++ (with xorg; [
 				libX11
 				libXext
-#				libXrandr
-#				libXrender
-#				libxcb
-#				libXau
-#				libXdmcp
 				libXi
 				libXmu
-#				libXt
-#				libSM
-#				libICE
 			]);
-			# KS has a shell script that sets everything up,we'rehijacking that instead
+			# KS has a shell script that sets everything up, we're hijacking that instead
 			entry = "${pkgs.bash}/bin/bash";
 			extraWrapperArgs = [
 				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
-				# native wayland crashes the compositor (or gpu driver?)
-				#"--set SDL_VIDEODRIVER x11"
 			];
 		})
 
@@ -109,6 +100,8 @@ in
 		waybar
 		wbg
 		synapse
+
+		screen
 	];
 
 	nix.settings.extra-platforms = [
@@ -118,6 +111,7 @@ in
 	programs.miriway = {
 		enable = true;
 		config = ''
+			idle-timeout=300
 			ctrl-alt=t:tym
 			enable-x11=
 			add-wayland-extensions=all
@@ -127,7 +121,16 @@ in
 			shell-component=waybar
 			shell-component=wbg Pictures/miriway-wallpaper
 
-			shell-meta=a:synapse
+			meta=a:synapse
+
+			meta=Left:@dock-left
+			meta=Right:@dock-right
+			meta=Space:@toggle-maximized
+			meta=Home:@workspace-begin
+			meta=End:@workspace-end
+			meta=Page_Up:@workspace-up
+			meta=Page_Down:@workspace-down
+			ctrl-alt=BackSpace:@exit
 		'';
 	};
 	fonts.fonts = with pkgs; [ font-awesome ];
@@ -137,6 +140,16 @@ in
 	environment.variables = {
 		# Experimental OpenGL 3.3 support in panfrost driver
 		"PAN_MESA_DEBUG" = "gl3";
+	};
+
+	#programs.lomiri.enable = true;
+
+	# Overriding profiles/desktop.nix, I want to try using Lomiri & Miriway
+	services.xserver.desktopManager.pantheon.enable = lib.mkForce false;
+	#services.xserver.displayManager.defaultSession = lib.mkForce "lomiri";
+	services.xserver.displayManager.lightdm.greeters = {
+		gtk.enable = lib.mkForce true;
+		pantheon.enable = lib.mkForce false;
 	};
 }
 
