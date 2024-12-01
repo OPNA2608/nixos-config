@@ -4,17 +4,21 @@
 , ...
 }:
 
+let
+	preferOnX86 = pkg1: pkg2: if pkgs.stdenv.hostPlatform.isx86 then pkg1 else pkg2;
+	whenAvailable = lib.lists.filter (x: lib.meta.availableOn pkgs.stdenv.hostPlatform x);
+in
 {
 	imports = [
 		./fonts.nix
 	];
 
-	sound.enable = true;
-
+  /*
 	hardware.pulseaudio = {
 		enable = true;
 		support32Bit = true;
 	};
+  */
 
 	services.xserver = {
 		enable = true;
@@ -47,12 +51,12 @@
 		# Web & Net
 		element-desktop
 		revolt-desktop
-		# palemoon # not available everywhere
 		networkmanagerapplet
 
 		# fallback
 		firefox
-		thunderbird
+		# TB getting abit on the heavier side, claws-mail ugly but slimmer
+		(preferOnX86 thunderbird claws-mail)
 
 		# Office & AV
 		corrscope
@@ -65,24 +69,21 @@
 		ffmpeg-full
 		# https://github.com/NixOS/nixpkgs/issues/212995
 		# I didn't ask for pipewire to crash my party
-		(wrapMpv (mpv-unwrapped.override { pipewireSupport = false; }) { })
+		(mpv-unwrapped.wrapper {
+			mpv = mpv-unwrapped.override { pipewireSupport = false; };
+		})
 
 		# System
-		(if pkgs.stdenv.hostPlatform.isx86 then
-			# not supported everywhere (needs OpenGL 3.3)
-			kitty
-		else
-			# fallback
-			# TODO dotfiles in VCS
-			tym
-		)
+		# Kitty not supported everywhere (needs OpenGL 3.3)
+		# TODO tym dotfiles in VCS
+		(preferOnX86 kitty tym)
 		pavucontrol
 		pcmanfm
 		xfce.mousepad
 		# https://github.com/NixOS/nixpkgs/issues/120765
 		# also can't easily do the shortcut for builtin screenshooter on Crimvael
 		xfce.xfce4-screenshooter
-	] ++ lib.optionals (lib.meta.availableOn pkgs.stdenv.hostPlatform palemoon-bin) [
+	] ++ (whenAvailable [
 		palemoon-bin
-	];
+  ]);
 }

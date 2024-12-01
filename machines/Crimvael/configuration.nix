@@ -31,8 +31,10 @@ in
 	# NixOS compatibility version
 	system.stateVersion = "22.11";
 
-	nix.maxJobs = 2;
-	nix.buildCores = 2;
+	nix.settings = {
+		max-jobs = 2;
+		cores = 1;
+	};
 
 	imports = [
 		./hardware-configuration.nix
@@ -71,10 +73,11 @@ in
 	services.logind.lidSwitch = "lock";
 
 	console.keyMap = "us";
-	services.xserver.layout = "us";
+	services.xserver.xkb.layout = "us";
 	services.chrony.serverOption = "offline";
 
 	environment.systemPackages = with pkgs; [
+    /*
 		(box64-wrapper {
 			pkg = x64-katawa-shoujo;
 			deps = [
@@ -95,7 +98,8 @@ in
 				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
 			];
 		})
-    duckstation
+    */
+		duckstation
 
 		grim
 		waybar
@@ -103,6 +107,11 @@ in
 		synapse
 
 		screen
+
+		clickable
+		xorg.xhost
+
+		protonmail-bridge
 	];
 
 	nix.settings.extra-platforms = [
@@ -117,7 +126,8 @@ in
 			enable-x11=
 			add-wayland-extensions=all
 
-			shell-component=dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY
+			app-env-amend=XDG_SESSION_TYPE=wayland:GTK_USE_PORTAL=0:XDG_CURRENT_DESKTOP=Miriway:GTK_A11Y=none:-GTK_IM_MODULE:NIXOS_OZONE_WL=1
+			shell-component=dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
 
 			shell-component=waybar
 			shell-component=wbg Pictures/miriway-wallpaper
@@ -134,7 +144,7 @@ in
 			ctrl-alt=BackSpace:@exit
 		'';
 	};
-	fonts.fonts = with pkgs; [ font-awesome ];
+	fonts.packages = with pkgs; [ font-awesome ];
 
 	zramSwap.enable = true;
 
@@ -143,14 +153,19 @@ in
 		"PAN_MESA_DEBUG" = "gl3";
 	};
 
-	#programs.lomiri.enable = true;
-
 	# Overriding profiles/desktop.nix, I want to try using Lomiri & Miriway
+	services.desktopManager.lomiri.enable = true;
 	services.xserver.desktopManager.pantheon.enable = lib.mkForce false;
-	#services.xserver.displayManager.defaultSession = lib.mkForce "lomiri";
+	services.displayManager.defaultSession = lib.mkForce "lomiri";
 	services.xserver.displayManager.lightdm.greeters = {
 		gtk.enable = lib.mkForce true;
 		pantheon.enable = lib.mkForce false;
+		lomiri.enable = lib.mkForce false;
 	};
+
+	hardware.alsa.enablePersistence = true;
+
+	virtualisation.docker.enable = true;
+	users.users.puna.extraGroups = [ "docker" ];
 }
 
