@@ -17,6 +17,7 @@ let
 	};
 	*/
 	nixpkgs-coolercontrol-src = <unstable>;
+	#nixpkgs-coolercontrol-src = /home/puna/Development/nixpkgs;
 	nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
 	networking.hostName = "Carlos";
@@ -80,7 +81,9 @@ in {
 				coolercontrol-ui-data = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-ui-data.nix") { });
 				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold;
 				coolercontrol-liqctld = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-liqctld.nix") { });
-				coolercontrol-gui = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-gui.nix") { });
+				coolercontrol-gui = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-gui.nix") {
+					inherit (nixpkgs-coolercontrol) rustPlatform;
+				});
 			};
 		})
 
@@ -91,6 +94,24 @@ in {
 					pkgsi686Linux.gperftools
 				];
 			};
+		})
+
+		# https://github.com/NixOS/nixpkgs/issues/274999 debugging
+		(final: prev: {
+			gnome = prev.gnome.overrideScope' (gfinal: gprev: {
+				gnome-session = gprev.gnome-session.overrideAttrs (attrs: {
+					separateDebugInfo = true;
+				});
+				gnome-shell = gprev.gnome-shell.overrideAttrs (attrs: {
+					separateDebugInfo = true;
+				});
+				mutter = gprev.mutter.overrideAttrs (attrs: {
+					separateDebugInfo = true;
+				});
+				mutter43 = gprev.mutter43.overrideAttrs (attrs: {
+					separateDebugInfo = true;
+				});
+			});
 		})
 	];
 
@@ -170,7 +191,17 @@ in {
 		# For Lomiri upstream submissions, needs to be latest one
 		nixpkgs-coolercontrol.clickable
 		xorg.xhost
+
+		# https://github.com/NixOS/nixpkgs/issues/274999 debugging
+		glib
+		gnome.gnome-session
+		gnome.mutter
+		gnome.mutter43
+		gnome.gnome-shell
 	];
+
+	# https://github.com/NixOS/nixpkgs/issues/274999 debugging
+	environment.enableDebugInfo = true;
 
 	programs.coolercontrol = {
 		enable = true;
