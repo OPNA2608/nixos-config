@@ -23,8 +23,8 @@ in {
 		];
 	};
 
-	services.xserver = let xEnabled = config.services.xserver.enable; in {
+	services.xserver.xkb = let xEnabled = config.services.xserver.enable; in {
 		layout = lib.mkDefault (if xEnabled then "de" else null);
-		xkbOptions = (if (xEnabled && config.console.keyMap == "de") then "eurosign:e" else "terminate:ctrl_alt_bksp");
+		options = (if (xEnabled && config.console.keyMap == "de") then "eurosign:e" else "terminate:ctrl_alt_bksp");
 	};
 }

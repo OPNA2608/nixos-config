@@ -6,8 +6,8 @@
 {
 	fonts = {
 		# Don't want some of them
-		enableDefaultFonts = false;
-		fonts = with pkgs; [
+		enableDefaultPackages = false;
+		packages = with pkgs; [
 			corefonts # MS fonts
 			openmoji-color openmoji-black # emojis
 			mplus-outline-fonts.osdnRelease # japanese

@@ -23,8 +23,9 @@
 			enable = true;
 			greeters.pantheon.enable = true;
 		};
-		libinput.enable = true;
 	};
+
+	services.libinput.enable = true;
 
 	environment.pantheon.excludePackages = (with pkgs.pantheon; [
 		elementary-calculator
@@ -57,7 +58,7 @@
 		corrscope
 		galculator
 		gimp
-		libreoffice
+		libreoffice-qt
 		mate.eom
 		mate.atril
 		yt-dlp

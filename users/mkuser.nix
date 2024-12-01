@@ -11,8 +11,9 @@ assert id != null;
 assert name != null;
 
 let
-	passwordPath = id: "/etc/nixos/users/passwords/${id}";
-	mkPasswordPath = id: if ! builtins.pathExists (/. + (passwordPath id)) then
+	mkPasswordPath = id: let
+		passwordPath = id: "/etc/nixos/users/passwords/${id}";
+  in if ! builtins.pathExists (/. + (passwordPath id)) then
 		throw "${passwordPath id} doesn't exist! Did you forget to create it with `mkpasswd -m <crypt> > ${passwordPath id}`?"
 	else
 		(passwordPath id);
@@ -20,7 +21,7 @@ in
 {
 	users.users.${id} = {
 		description = name;
-		passwordFile = mkPasswordPath id;
+		hashedPasswordFile = mkPasswordPath id;
 		isNormalUser = true;
 		shell = pkgs.fish;
 		extraGroups = [ "wheel" "networkmanager" ];
