@@ -95,6 +95,7 @@ in
 				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
 			];
 		})
+    duckstation
 
 		grim
 		waybar
