@@ -9,11 +9,16 @@
 ###
 
 let
-#	x64-katawa-shoujo = pkgs.pkgsCross.gnu64.callPackage ./packages/katawa-shoujo.nix { };
+	x64-katawa-shoujo = (pkgs.pkgsCross.gnu64.callPackage ./packages/katawa-shoujo.nix {
+		devendorImageLibs = false;
+	}).overrideAttrs (oa: {
+		buildInputs = [];
+		dontAutoPatchelf = true;
+	});
 #	katawa-shoujo-deps = (pkgs.callPackage ./packages/katawa-shoujo.nix { }).buildInputs;
-#	box64-wrapper = pkgs.callPackage ./packages/box-wrapper.nix {
-#		x64-bash = pkgs.pkgsCross.gnu64.bash;
-#	};
+	box64-wrapper = pkgs.callPackage ./packages/box-wrapper.nix {
+		x64-bash = pkgs.pkgsCross.gnu64.bash;
+	};
 	grub = import ./profiles/grub.nix {
 		supportEfi = true;
 	};
@@ -47,7 +52,7 @@ in
 		"pinebookpro-ap6256-firmware"
 		"corefonts"
 		"input-fonts"
-#		(x64-katawa-shoujo.pname)
+		(x64-katawa-shoujo.pname)
 	];
 
 	boot.loader.generic-extlinux-compatible.enable = false;
@@ -64,38 +69,41 @@ in
 	services.chrony.serverOption = "offline";
 
 	environment.systemPackages = with pkgs; [
-#		(box64-wrapper {
-#			pkg = x64-katawa-shoujo;
-#			deps = [
-#				zlib
+		(box64-wrapper {
+			pkg = x64-katawa-shoujo;
+			deps = [
+				freetype
+				zlib
+				SDL_compat
 #				SDL
 #				SDL_image
 #				SDL_ttf
-#				libGLU
-#				libGL
+				libGLU
+				libGL
 #				glew
 #				util-linux
-#			] ++ (with xorg; [
-#				libX11
-#				libXext
+			] ++ (with xorg; [
+				libX11
+				libXext
 #				libXrandr
 #				libXrender
 #				libxcb
 #				libXau
 #				libXdmcp
-#				libXi
-#				libXmu
+				libXi
+				libXmu
 #				libXt
 #				libSM
 #				libICE
-#			]);
-#			# KS has a shell script that sets everything up,we'rehijacking that instead
-#			entry = "${pkgs.bash}/bin/bash";
-#			extraWrapperArgs = [
-#				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
-#				"--set RENPY_PLATFORM linux-x86_64"
-#			];
-#		})
+			]);
+			# KS has a shell script that sets everything up,we'rehijacking that instead
+			entry = "${pkgs.bash}/bin/bash";
+			extraWrapperArgs = [
+				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
+				# native wayland crashes the compositor (or gpu driver?)
+				#"--set SDL_VIDEODRIVER x11"
+			];
+		})
 
 		grim
 		waybar
@@ -125,5 +133,10 @@ in
 	fonts.fonts = with pkgs; [ font-awesome ];
 
 	zramSwap.enable = true;
+
+	environment.variables = {
+		# Experimental OpenGL 3.3 support in panfrost driver
+		"PAN_MESA_DEBUG" = "gl3";
+	};
 }
 
