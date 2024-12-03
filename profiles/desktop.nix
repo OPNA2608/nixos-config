@@ -39,8 +39,8 @@ in
 		elementary-photos
 		elementary-terminal
 		elementary-videos
-	]) ++ (with pkgs.gnome; [
 		epiphany
+	]) ++ (with pkgs; [
 		geary
 	]);
 	programs.evince.enable = false; # atril

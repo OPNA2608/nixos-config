@@ -33,12 +33,13 @@ in
 		"vesa" # Fallback
 	];
 
-	hardware.opengl.enable = true;
-
-	hardware.opengl.extraPackages = lib.optionals (type == "amd") (with pkgs; [
-		#amdvlk
-	]);
-	hardware.opengl.extraPackages32 = lib.optionals (type == "amd") (with pkgs; [
-		#driversi686Linux.amdvlk
-	]);
+	hardware.graphics = {
+		enable = true;
+		extraPackages = lib.optionals (type == "amd") (with pkgs; [
+			#amdvlk
+		]);
+		extraPackages32 = lib.optionals (type == "amd") (with pkgs; [
+			#driversi686Linux.amdvlk
+		]);
+	};
 }

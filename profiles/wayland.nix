@@ -9,20 +9,21 @@
 		./fonts.nix
 	];
 
-	sound.enable = true;
-
+	/*
 	hardware.pulseaudio = {
 		enable = true;
 		support32Bit = true;
 	};
+	*/
 
 	services.xserver = {
 		enable = true;
 		displayManager.lightdm = {
 			enable = true;
 		};
-		libinput.enable = true;
 	};
+
+	services.libinput.enable = true;
 
 	programs.miriway = {
 		enable = true;
@@ -53,7 +54,7 @@
 		'';
 	};
 
-	fonts.fonts = with pkgs; [ font-awesome ];
+	fonts.packages= with pkgs; [ font-awesome ];
 
 	environment.systemPackages = with pkgs; [
 		grim

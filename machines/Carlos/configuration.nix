@@ -98,19 +98,17 @@ in {
 
 		# https://github.com/NixOS/nixpkgs/issues/274999 debugging
 		(final: prev: {
-			gnome = prev.gnome.overrideScope' (gfinal: gprev: {
-				gnome-session = gprev.gnome-session.overrideAttrs (attrs: {
-					separateDebugInfo = true;
-				});
-				gnome-shell = gprev.gnome-shell.overrideAttrs (attrs: {
-					separateDebugInfo = true;
-				});
-				mutter = gprev.mutter.overrideAttrs (attrs: {
-					separateDebugInfo = true;
-				});
-				mutter43 = gprev.mutter43.overrideAttrs (attrs: {
-					separateDebugInfo = true;
-				});
+			gnome-session = prev.gnome-session.overrideAttrs (attrs: {
+				separateDebugInfo = true;
+			});
+			gnome-shell = prev.gnome-shell.overrideAttrs (attrs: {
+				separateDebugInfo = true;
+			});
+			mutter = prev.mutter.overrideAttrs (attrs: {
+				separateDebugInfo = true;
+			});
+			mutter43 = prev.mutter43.overrideAttrs (attrs: {
+				separateDebugInfo = true;
 			});
 		})
 	];
@@ -130,9 +128,9 @@ in {
 			pkgs.discord.meta.description
 			pkgs.input-fonts.meta.description
 			pkgs.minecraft.meta.description
+			pkgs.steam-unwrapped.meta.description
 			pkgs.steam.meta.description
-			pkgs.steamPackages.steam-runtime.meta.description
-			pkgs.steamPackages.steam-fhsenv.run.meta.description
+			pkgs.steam.run.meta.description
 			pkgs.unrar.meta.description
 			pkgs.logmein-hamachi.meta.description
 			#((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
@@ -194,10 +192,10 @@ in {
 
 		# https://github.com/NixOS/nixpkgs/issues/274999 debugging
 		glib
-		gnome.gnome-session
-		gnome.mutter
-		gnome.mutter43
-		gnome.gnome-shell
+		gnome-session
+		mutter
+		mutter43
+		gnome-shell
 	];
 
 	# https://github.com/NixOS/nixpkgs/issues/274999 debugging
@@ -210,7 +208,7 @@ in {
 	programs.haguichi.enable = true;
 
 	services.desktopManager.lomiri.enable = true;
-	services.xserver.displayManager.defaultSession = lib.mkForce "pantheon";
+	services.displayManager.defaultSession = lib.mkForce "pantheon";
 	services.xserver.displayManager.lightdm.greeters = {
 		pantheon.enable = lib.mkForce false;
 		lomiri.enable = lib.mkForce true;
