@@ -1,25 +1,39 @@
 #!/usr/bin/env bash
 
 HOSTNAME=$(hostname)
-MACHINE="$HOSTNAME"
+MACHINE="${HOSTNAME}"
 
-if [ ! "x""$1" == "x" ]; then
-  MACHINE="$1"
+if [ ! "x""${1}" == "x" ]; then
+  MACHINE="${1}"
 fi
 
-if [[ ! -e "machines/$MACHINE/configuration.nix" ]]; then
-  echo "Missing machines/$MACHINE/configuration.nix" >&2
+if [[ ! -e "machines/${MACHINE}/base.nix" ]]; then
+  echo "Missing machines/${MACHINE}/base.nix" >&2
+  exit 1
+fi
+if [[ ! -e "machines/${MACHINE}/full.nix" ]]; then
+  echo "Missing machines/${MACHINE}/full.nix" >&2
   exit 1
 fi
 
-cat <<EOF | tee > configuration.nix
-{ ...
-}:
+dirName="$(dirname "${0}")"
 
-{
-	imports = [
-		./machines/$MACHINE/configuration.nix
-	];
-}
-EOF
+outputDir="$(nix-build --no-out-link -E '
+  with import <nixpkgs> {};
 
+  callPackage (import '"${dirName}"'/ln-host.nix {
+    machine = "'"${MACHINE}"'";
+  }) {}
+')"
+configBuildStatus="${?}"
+
+if [ "${configBuildStatus}" -ne 0 ]; then
+  echo "Failed to build config options" >&2
+  exit 2
+fi
+
+cp --no-preserve=all "${outputDir}/base.nix" base.nix
+cp --no-preserve=all "${outputDir}/full.nix" full.nix
+
+# Pick full by default
+cp full.nix configuration.nix

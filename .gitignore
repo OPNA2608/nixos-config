@@ -1,3 +1,4 @@
-# These get hardlinked on the target machine
+# These get generated on the target machine
 /configuration.nix
-/hardware-configuration.nix
+/base.nix
+/full.nix

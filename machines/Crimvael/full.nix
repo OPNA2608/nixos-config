@@ -19,65 +19,25 @@ let
 	box64-wrapper = pkgs.callPackage ../../packages/box-wrapper.nix {
 		x64-bash = pkgs.pkgsCross.gnu64.bash;
 	};
-	grub = import ../../profiles/grub.nix {
-		supportEfi = true;
-	};
 in
 
 {
-	networking.hostName = "Crimvael";
-	boot.kernelPackages = pkgs.linuxPackages_latest;
-
-	# NixOS compatibility version
-	system.stateVersion = "22.11";
-
-	nix.settings = {
-		max-jobs = 2;
-		cores = 1;
-	};
-
 	imports = [
-		./hardware-configuration.nix
+		./base.nix
 
-		<nixos-hardware/pine64/pinebook-pro>
-
-		../../profiles/common.nix
 		../../profiles/desktop.nix
-
-		grub
-		../../profiles/devel.nix
-
-		../../users/puna.nix
+		../../profiles/wayland.nix
 	];
 
-	# May lose track of time when disconnected from power, can't get chrony to do huge date jumps
-	services.chrony.enable = lib.mkForce false;
-	services.timesyncd.enable = lib.mkForce true;
-
 	nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-		"pinebookpro-ap6256-firmware"
-		"corefonts"
-		"input-fonts"
+    "pinebookpro-ap6256-firmware"
+    "corefonts"
+    "input-fonts"
 		(x64-katawa-shoujo.pname)
 	];
 
-	boot.loader.generic-extlinux-compatible.enable = false;
-	boot.loader.efi.canTouchEfiVariables = false;
-	# To avoid the missing symbol 'grub_is_shim_lock_enabled' error at boot time
-	boot.loader.grub.efiInstallAsRemovable = true;
-
-	# Doesn't work?
-	boot.plymouth.enable = lib.mkForce false;
-
-	# waking from suspend is broken, remove one source of unintentional suspends
-	services.logind.lidSwitch = "lock";
-
-	console.keyMap = "us";
-	services.xserver.xkb.layout = "us";
-	services.chrony.serverOption = "offline";
-
 	environment.systemPackages = with pkgs; [
-    /*
+		/*
 		(box64-wrapper {
 			pkg = x64-katawa-shoujo;
 			deps = [
@@ -98,29 +58,20 @@ in
 				"--set RENPY_GDB ${pkgs.box64}/bin/box64"
 			];
 		})
-    */
-		duckstation
-
-		grim
-		waybar
-		wbg
-		synapse
-
-		screen
-
-		clickable
-		xorg.xhost
+		*/
+		(duckstation.overrideAttrs (oa: {
+			patches = (oa.patches or []) ++ [
+				../../packages/duckstation/2001-duckstation-Fix-usage-of-NEON-intrinsics.patch
+			];
+		}))
 
 		protonmail-bridge
 	];
 
-	nix.settings.extra-platforms = [
-		"armv7l-linux"
-	];
-
 	programs.miriway = {
 		enable = true;
-		config = ''
+		# TODO: Make config from module suitable for laptop
+		config = lib.mkForce ''
 			idle-timeout=300
 			ctrl-alt=t:tym
 			enable-x11=
@@ -132,21 +83,34 @@ in
 			shell-component=waybar
 			shell-component=wbg Pictures/miriway-wallpaper
 
-			meta=a:synapse
+			shell-component=protonmail-bridge --noninteractive
 
-			meta=Left:@dock-left
-			meta=Right:@dock-right
+			meta=a:synapse
+			meta=l:loginctl lock-session
+
+			lockscreen-on-idle=1
+			lockscreen-app=${lib.getExe (pkgs.callPackage ../../packages/gtklock-wrapped.nix {
+				gtklock-packages = with pkgs; [
+					({
+						pkg = gtklock-userinfo-module;
+						module = "userinfo-module";
+					})
+				];
+			})}
+
 			meta=Space:@toggle-maximized
-			meta=Home:@workspace-begin
-			meta=End:@workspace-end
 			meta=Page_Up:@workspace-up
 			meta=Page_Down:@workspace-down
 			ctrl-alt=BackSpace:@exit
+
+			# Keyboard is dumb, meta + arrows don't work
+			meta=Home:@dock-left
+			meta=End:@dock-right
+			meta=q:@dock-left
+			meta=e:@dock-right
 		'';
 	};
 	fonts.packages = with pkgs; [ font-awesome ];
-
-	zramSwap.enable = true;
 
 	environment.variables = {
 		# Experimental OpenGL 3.3 support in panfrost driver
@@ -158,14 +122,8 @@ in
 	services.xserver.desktopManager.pantheon.enable = lib.mkForce false;
 	services.displayManager.defaultSession = lib.mkForce "lomiri";
 	services.xserver.displayManager.lightdm.greeters = {
-		gtk.enable = lib.mkForce true;
 		pantheon.enable = lib.mkForce false;
-		lomiri.enable = lib.mkForce false;
+		lomiri.enable = lib.mkForce true;
 	};
-
-	hardware.alsa.enablePersistence = true;
-
-	virtualisation.docker.enable = true;
-	users.users.puna.extraGroups = [ "docker" ];
 }
 
