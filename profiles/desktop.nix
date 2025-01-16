@@ -49,8 +49,6 @@ in
 
 	environment.systemPackages = with pkgs; [
 		# Web & Net
-		element-desktop
-		revolt-desktop
 		networkmanagerapplet
 
 		# fallback
@@ -85,5 +83,9 @@ in
 		xfce.xfce4-screenshooter
 	] ++ (whenAvailable [
 		palemoon-bin
-  ]);
+	]) ++ lib.optionals (stdenv.hostPlatform.isx86_64) [
+		# Electron is currently timing out on aarch64 hydra, and I'm not sitting through those rebuilds on an ARM laptop
+		element-desktop
+		revolt-desktop
+	];
 }

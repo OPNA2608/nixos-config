@@ -16,6 +16,8 @@
 	};
 	*/
 
+	security.pam.services.gtklock = {};
+
 	services.xserver = {
 		enable = true;
 		displayManager.lightdm = {
@@ -43,6 +45,16 @@
 
 			shell-meta=a:synapse
 
+			lockscreen-on-idle=1
+			lockscreen-app=${lib.getExe (pkgs.callPackage ../packages/gtklock-wrapped.nix {
+				gtklock-packages = with pkgs; [
+					({
+						pkg = gtklock-userinfo-module;
+						module = "userinfo-module";
+					})
+				];
+			})}
+
 			meta=Left:@dock-left
 			meta=Right:@dock-right
 			meta=Space:@toggle-maximized
@@ -59,7 +71,14 @@
 	environment.systemPackages = with pkgs; [
 		grim
 		waybar
-		wbg
+		(wbg.overrideAttrs (oa: {
+			patches = (oa.patches or []) ++ [
+				(fetchpatch {
+					url = "https://codeberg.org/dnkl/wbg/commit/d687493c7cbc3d112db6030ec786b4b719ba075d.patch";
+					hash = "sha256-ZFrTA2ajy9kHfzEIaX7yqRlw1cFM/kMSUIGY46zmFf8=";
+				})
+			];
+		}))
 		synapse
 
 		vanilla-dmz
