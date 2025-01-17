@@ -1,0 +1,66 @@
+From b1cf025678456d4c2994f6a7171afa689a694229 Mon Sep 17 00:00:00 2001
+From: OPNA2608 <opna2608@protonmail.com>
+Date: Mon, 16 Dec 2024 22:18:09 +0100
+Subject: [PATCH] WindowManager: Only show notifications after their window was
+ shown
+
+---
+ src/WindowManager.vala | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/WindowManager.vala b/src/WindowManager.vala
+index 1ebaa60..85a4ea1 100644
+--- a/src/WindowManager.vala
++++ b/src/WindowManager.vala
+@@ -110,8 +110,6 @@ namespace Gala {
+         private bool animating_switch_workspace = false;
+         private bool switch_workspace_with_gesture = false;
+ 
+-        private signal void window_created (Meta.Window window);
+-
+         /**
+          * Amount of pixels to move on the nudge animation.
+          */
+@@ -357,9 +355,6 @@ namespace Gala {
+ 
+             update_input_area ();
+ 
+-
+-            display.window_created.connect ((window) => window_created (window));
+-
+             stage.show ();
+ 
+             Idle.add (() => {
+@@ -1958,11 +1953,16 @@ namespace Gala {
+ 
+             // while a workspace is being switched mutter doesn't map windows
+             // TODO: currently only notifications are handled here, other windows should be too
+-            switch_workspace_window_created_id = window_created.connect ((window) => {
++            switch_workspace_window_created_id = get_display ().window_created.connect_after ((window) => {
+                 if (window.window_type == Meta.WindowType.NOTIFICATION) {
+-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+-                    clutter_actor_reparent (actor, notification_group);
+-                    notification_stack.show_notification (actor, enable_animations);
++                    ulong window_shown_id = 0;
++                    window_shown_id = window.shown.connect (() => {
++                        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
++                        clutter_actor_reparent (actor, notification_group);
++                        notification_stack.show_notification (actor, enable_animations);
++
++                        window.disconnect (window_shown_id);
++                    });
+                 }
+             });
+ 
+@@ -2089,7 +2089,7 @@ namespace Gala {
+         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
+                 bool cancel_action) {
+             if (switch_workspace_window_created_id > 0) {
+-                disconnect (switch_workspace_window_created_id);
++                get_display ().disconnect (switch_workspace_window_created_id);
+                 switch_workspace_window_created_id = 0;
+             }
+             end_switch_workspace ();
+-- 
+2.47.0
+

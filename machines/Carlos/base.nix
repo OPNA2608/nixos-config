@@ -9,14 +9,14 @@
 ###
 
 let
-	/*
 	nixpkgs-coolercontrol-src = builtins.fetchTarball {
 		# https://github.com/codifryed/nixpkgs/tree/coolercontrol
-		url = "https://github.com/codifryed/nixpkgs/archive/22b1e2447b0e6d8075188c52e492f5542e3e319c.tar.gz";
-		sha256 = "1f933r8946q1sqqd5cv3my77c5av66kgqdh0b56y7m3802aga4v5";
+		url = "https://github.com/codifryed/nixpkgs/archive/81806e544faca8bb85bdfd79e8212a61709e0d58.tar.gz";
+		sha256 = "1rhkhcfm45fg5ydskj6k950aacn5853dnd7hg7y5r3qk5l56fvk4";
 	};
-	*/
+	/*
 	nixpkgs-coolercontrol-src = <unstable>;
+	*/
 	#nixpkgs-coolercontrol-src = /home/puna/Development/nixpkgs;
 	nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
 in {
@@ -109,6 +109,41 @@ in {
 			});
 			mutter43 = prev.mutter43.overrideAttrs (attrs: {
 				separateDebugInfo = true;
+			});
+
+			# Attempting to fix this with a patch
+			pantheon = prev.pantheon.overrideScope (gfinal: gprev: {
+				gala = gprev.gala.overrideAttrs (oa: {
+					patches = (oa.patches or []) ++ [
+						(prev.fetchpatch {
+							name = "9991-gala-More-checks-in-notifications-stack.patch";
+							url = "https://github.com/elementary/gala/commit/186e9a304a02bcef01a97a4336438c2969c57754.patch";
+							hash = "sha256-aC0MH54InRj4MK7nxlEyAZxzsPh338V5P/gFuGkTfDc=";
+						})
+/*
+						(prev.fetchpatch {
+							name = "9992-gala-PanelWindow-Fix-possible-segfault.patch";
+							url = "https://github.com/elementary/gala/commit/fdd5e440d43af570e32710d026164fc0683752c9.patch";
+							hash = "sha256-fefOkkqGX6mo/NzykDdkTDz7oZha3jxzfBQ8piIGn9E=";
+						})
+						(prev.fetchpatch {
+							name = "9993-gala-ShellClients-Fix-crash-when-positioning-window-while-unmanaging.patch";
+							url = "https://github.com/elementary/gala/commit/48b716337f51a8d1c798015c8d677d2d5fa36e4d.patch";
+							hash = "sha256-KVRG2C4i11L5o0ZpSoGsDHEqs2jjdPaXup2u9PYdHfo=";
+						})
+*/
+
+						# https://github.com/elementary/gala/pull/2129
+            /*
+						(prev.fetchpatch {
+							name = "9994-gala-WindowManager-Only-show-notifications-after-their-window-was-shown.patch";
+							url = "https://github.com/elementary/gala/commit/719c2dbfe1975bc307892ddeb4e51fd9b8b784d4.patch";
+							hash = "sha256-bTIXn8SLJwM5N2rwjSb9iDNwguvU+qLZWT4JV28+zrU=";
+						})
+            */
+						../../packages/gala-0001-WindowManager-Only-show-notifications-after-their-wi.patch
+					];
+				});
 			});
 		})
 	];
