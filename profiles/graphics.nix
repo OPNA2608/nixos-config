@@ -20,7 +20,7 @@ let
 			alternate = "nvidiaBeta";
 		};
 		intel = {
-			main = "intel";
+			main = "modesetting";
 			alternate = "modesetting";
 		};
 	};
