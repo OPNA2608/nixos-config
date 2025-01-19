@@ -24,9 +24,9 @@ symlinkJoin {
 		rm $out/bin/${tym.meta.mainProgram}
 
 		makeWrapper ${lib.getExe tym} $out/bin/${tym.meta.mainProgram} \
-			--add-flags '--use=${(replaceVars ./tym/config.lua.in {
+			--add-flags '--use=${replaceVars ./tym/templated/config.lua {
 				screenIsSmall = lib.trivial.boolToString screenIsSmall;
-			}).overrideAttrs (oa: { name = "config.lua"; })}' \
+			}}' \
 			--add-flags '--theme=${./tym/theme.lua}'
 	'';
 
