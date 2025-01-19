@@ -7,6 +7,7 @@
 let
 	preferOnX86 = pkg1: pkg2: if pkgs.stdenv.hostPlatform.isx86 then pkg1 else pkg2;
 	whenAvailable = lib.lists.filter (x: lib.meta.availableOn pkgs.stdenv.hostPlatform x);
+	tym-wrapped = pkgs.callPackage ../packages/tym-wrapper.nix { };
 in
 {
 	imports = [
@@ -71,10 +72,7 @@ in
 			mpv = mpv-unwrapped.override { pipewireSupport = false; };
 		})
 
-		# System
-		# Kitty not supported everywhere (needs OpenGL 3.3)
-		# TODO tym dotfiles in VCS
-		(preferOnX86 kitty tym)
+		tym-wrapped
 		pavucontrol
 		pcmanfm
 		xfce.mousepad
@@ -87,5 +85,9 @@ in
 		# Electron is currently timing out on aarch64 hydra, and I'm not sitting through those rebuilds on an ARM laptop
 		element-desktop
 		revolt-desktop
+	];
+
+	systemd.user.targets.graphical-session.wants = [
+		"tym-daemon.service"
 	];
 }
