@@ -43,7 +43,7 @@
 		lhasa
 		man-pages
 		networkmanager
-		neofetch
+		hyfetch fastfetch # latter user by the former
 		nixos-option
 		nkf
 		service-wrapper
