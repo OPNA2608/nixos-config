@@ -19,13 +19,16 @@ let
 	box64-wrapper = pkgs.callPackage ../../packages/box-wrapper.nix {
 		x64-bash = pkgs.pkgsCross.gnu64.bash;
 	};
+	desktop = import ../../profiles/desktop.nix {
+		screenIsSmall = true;
+	};
 in
 
 {
 	imports = [
 		./base.nix
 
-		../../profiles/desktop.nix
+		desktop
 		../../profiles/wayland.nix
 	];
 
@@ -59,11 +62,7 @@ in
 			];
 		})
 		*/
-		(duckstation.overrideAttrs (oa: {
-			patches = (oa.patches or []) ++ [
-				../../packages/duckstation/2001-duckstation-Fix-usage-of-NEON-intrinsics.patch
-			];
-		}))
+		duckstation
 
 		protonmail-bridge
 	];
@@ -125,5 +124,7 @@ in
 		pantheon.enable = lib.mkForce false;
 		lomiri.enable = lib.mkForce true;
 	};
+
+	programs.nix-index.package = (import <nix-index-database> { inherit pkgs; }).nix-index-with-db;
 }
 
