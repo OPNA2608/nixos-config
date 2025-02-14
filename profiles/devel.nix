@@ -4,9 +4,16 @@
 
 {
 	environment.systemPackages = with pkgs; [
+		gh
 		gitFull
-		nix-index
 		nixfmt-rfc-style
 		nixpkgs-review
 	];
+
+	programs.nix-index = {
+		enable = true;
+		enableBashIntegration = false;
+		enableFishIntegration = false;
+		enableZshIntegration = false;
+	};
 }
