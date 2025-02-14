@@ -1,3 +1,6 @@
+{ screenIsSmall ? false
+}:
+
 { config
 , pkgs
 , lib
@@ -7,7 +10,9 @@
 let
 	preferOnX86 = pkg1: pkg2: if pkgs.stdenv.hostPlatform.isx86 then pkg1 else pkg2;
 	whenAvailable = lib.lists.filter (x: lib.meta.availableOn pkgs.stdenv.hostPlatform x);
-	tym-wrapped = pkgs.callPackage ../packages/tym-wrapper.nix { };
+	tym-wrapped = pkgs.callPackage ../packages/tym-wrapper.nix {
+		inherit screenIsSmall;
+	};
 in
 {
 	imports = [
@@ -50,6 +55,7 @@ in
 
 	environment.systemPackages = with pkgs; [
 		# Web & Net
+		element-desktop
 		networkmanagerapplet
 
 		# fallback
@@ -66,11 +72,7 @@ in
 		mate.atril
 		yt-dlp
 		ffmpeg-full
-		# https://github.com/NixOS/nixpkgs/issues/212995
-		# I didn't ask for pipewire to crash my party
-		(mpv-unwrapped.wrapper {
-			mpv = mpv-unwrapped.override { pipewireSupport = false; };
-		})
+		mpv
 
 		tym-wrapped
 		pavucontrol
@@ -81,11 +83,7 @@ in
 		xfce.xfce4-screenshooter
 	] ++ (whenAvailable [
 		palemoon-bin
-	]) ++ lib.optionals (stdenv.hostPlatform.isx86_64) [
-		# Electron is currently timing out on aarch64 hydra, and I'm not sitting through those rebuilds on an ARM laptop
-		element-desktop
-		revolt-desktop
-	];
+	]);
 
 	systemd.user.targets.graphical-session.wants = [
 		"tym-daemon.service"
