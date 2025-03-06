@@ -9,21 +9,10 @@
 ###
 
 let
-	nixpkgs-coolercontrol-src = builtins.fetchTarball {
-		# https://github.com/codifryed/nixpkgs/tree/coolercontrol
-		url = "https://github.com/codifryed/nixpkgs/archive/81806e544faca8bb85bdfd79e8212a61709e0d58.tar.gz";
-		sha256 = "1rhkhcfm45fg5ydskj6k950aacn5853dnd7hg7y5r3qk5l56fvk4";
-	};
-	/*
-	nixpkgs-coolercontrol-src = <unstable>;
-	*/
-	#nixpkgs-coolercontrol-src = /home/puna/Development/nixpkgs;
-	nixpkgs-coolercontrol = import nixpkgs-coolercontrol-src { };
+	nixpkgs-unstable = import <unstable> { };
 in {
 	networking.hostName = "Carlos";
-	#boot.kernelPackages = pkgs.linuxPackages_latest;
-	# Black screen on 6.7.0
-	boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_6;
+	boot.kernelPackages = pkgs.linuxPackages_latest;
 
 	hardware.cpu.amd.updateMicrocode = true;
 
@@ -40,7 +29,7 @@ in {
 		./hardware-configuration.nix
 		../../profiles/common.nix
 
-		../../profiles/desktop.nix
+		(import ../../profiles/desktop.nix {})
 		../../profiles/wayland.nix
 		(import ../../profiles/graphics.nix {
 			type = "amd";
@@ -66,27 +55,6 @@ in {
 	];
 
 	nixpkgs.overlays = [
-		(final: prev: {
-			coolercontrol = let
-				inherit (nixpkgs-coolercontrol.coolercontrol.coolercontrold) version src;
-				meta = with final.lib; {
-					description = "Monitor and control your cooling devices";
-					homepage = "https://gitlab.com/coolercontrol/coolercontrol";
-					license = licenses.gpl3Plus;
-					platforms = [ "x86_64-linux" ];
-					maintainers = with maintainers; [ codifryed OPNA2608 ];
-				};
-				applySharedDetails = drv: drv { inherit version src meta; };
-			in {
-				coolercontrol-ui-data = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-ui-data.nix") { });
-				inherit (nixpkgs-coolercontrol.coolercontrol) coolercontrold;
-				coolercontrol-liqctld = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-liqctld.nix") { });
-				coolercontrol-gui = applySharedDetails (final.callPackage (nixpkgs-coolercontrol-src + "/pkgs/applications/system/coolercontrol/coolercontrol-gui.nix") {
-					inherit (nixpkgs-coolercontrol) rustPlatform;
-				});
-			};
-		})
-
 		# 32-bit Valve game fix
 		(final: prev: {
 			steam = prev.steam.override {
@@ -219,10 +187,63 @@ in {
 		protonmail-bridge
 
 		# Connecting to my tablet
-		rcu
+		# Older versions are harder to get
+		(rcu.overrideAttrs (oa: rec {
+			version = "2025.001s";
+			src =
+				let
+					src-tarball = requireFile {
+						name = "rcu-d${version}-source.tar.gz";
+						hash = "sha256-QC9ieulYAmE9pwt1/eZmyI5MZfRV0f24Pe5oKtuXNok=";
+						url = "https://www.davisr.me/projects/rcu/";
+					};
+				in
+				runCommand "${src-tarball.name}-unpacked" { } ''
+					gunzip -ck ${src-tarball} | tar -xvf-
+					mv rcu $out
+					ln -s ${src-tarball} $out/src
+				'';
 
-		# For Lomiri upstream submissions, needs to be latest one
-		nixpkgs-coolercontrol.clickable
+				# Update refs to older src
+				installPhase =
+					''
+						runHook preInstall
+
+						mkdir -p $out/{bin,share}
+						cp -r src $out/share/rcu
+
+					''
+					+ lib.optionalString stdenv.hostPlatform.isLinux ''
+						install -Dm644 package_support/gnulinux/50-remarkable.rules $out/etc/udev/rules.d/50-remarkable.rules
+					''
+					+ ''
+
+						# Keep source from being GC'd by linking into it
+
+						for icondir in $(find icons -type d -name '[0-9]*x[0-9]*'); do
+							iconsize=$(basename $icondir)
+							mkdir -p $out/share/icons/hicolor/$iconsize/apps
+							ln -s ${src}/icons/$iconsize/rcu-icon-$iconsize.png $out/share/icons/hicolor/$iconsize/apps/rcu.png
+						done
+
+						mkdir -p $out/share/icons/hicolor/scalable/apps
+						ln -s ${src}/icons/64x64/rcu-icon-64x64.svg $out/share/icons/hicolor/scalable/apps/rcu.svg
+
+						mkdir -p $out/share/doc/rcu
+						for docfile in {COPYING,manual.pdf}; do
+							ln -s ${src}/manual/$docfile $out/share/doc/rcu/$docfile
+						done
+
+						mkdir -p $out/share/licenses/rcu
+						ln -s ${src}/COPYING $out/share/licenses/rcu/COPYING
+
+						runHook postInstall
+					'';
+		}))
+
+		# For Lomiri upstream submissions
+		# Clickable needs to be latest one
+		nixpkgs-unstable.clickable
 		xorg.xhost
 
 		# https://github.com/NixOS/nixpkgs/issues/274999 debugging
