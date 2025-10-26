@@ -30,6 +30,8 @@
 		lessopen = lib.mkForce null;
 	};
 
+	programs.gnupg.agent.enable = true;
+
 	networking.networkmanager.enable = true;
 
 	users.mutableUsers = false;
