@@ -4,10 +4,12 @@
 
 {
 	environment.systemPackages = with pkgs; [
+		editorconfig-checker
 		gh
 		gitFull
 		nixfmt-rfc-style
 		lixPackageSets.latest.nixpkgs-review
+		pre-commit
 		screen
 	];
 
