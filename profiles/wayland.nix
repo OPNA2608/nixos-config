@@ -26,6 +26,9 @@
     };
   };
 
+  # Miriway seems to struggle with default X11 askpass
+  programs.ssh.askPassword = lib.getExe pkgs.lxqt.lxqt-openssh-askpass;
+
   services.libinput.enable = true;
 
   programs.miriway = {
