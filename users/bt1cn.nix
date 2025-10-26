@@ -1,4 +1,4 @@
 import ./mkuser.nix {
-	id = "bt1cn";
-	name = "Puna";
+  id = "bt1cn";
+  name = "Puna";
 }

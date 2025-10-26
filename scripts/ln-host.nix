@@ -18,17 +18,21 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
-    cp ${substituteAll {
-      inherit (finalAttrs) src;
-      inherit machine;
-      config = "base";
-    }} ./base.nix
+    cp ${
+      substituteAll {
+        inherit (finalAttrs) src;
+        inherit machine;
+        config = "base";
+      }
+    } ./base.nix
 
-    cp ${substituteAll {
-      inherit (finalAttrs) src;
-      inherit machine;
-      config = "full";
-    }} ./full.nix
+    cp ${
+      substituteAll {
+        inherit (finalAttrs) src;
+        inherit machine;
+        config = "full";
+      }
+    } ./full.nix
 
     runHook postBuild
   '';
