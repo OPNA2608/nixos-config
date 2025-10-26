@@ -9,7 +9,7 @@
 				vi = "vim";
 				ll = "ls -ahl --color=auto";
 				df = "df -h";
-				htop = "htop -d0.1";
+				htop = "htop -d5";
 			};
 		variables = {
 			fish_prompt_pwd_dir_length = "0";
@@ -39,10 +39,12 @@
 				set_color normal
 			end
 		'';
-		# Is this still needed?
-		# shellInit = ''
-		# 	set -x fish_prompt_pwd_dir_length 0
-		# '';
+		shellInit = ''
+			# This must've changed at some point, and Alt-Backspace backward-kills entire tokens now?
+			# Please go back :(
+			bind --erase --preset alt-backspace
+			bind --preset alt-backspace backward-kill-word
+		'';
 	};
 	programs.bash.promptInit = ''
 		# Provide a nice prompt.
