@@ -28,12 +28,13 @@ in
 
 	services.xserver = {
 		enable = true;
-		desktopManager.pantheon.enable = true;
 		displayManager.lightdm = {
 			enable = true;
 			greeters.pantheon.enable = true;
 		};
 	};
+
+	services.desktopManager.pantheon.enable = true;
 
 	services.libinput.enable = true;
 
