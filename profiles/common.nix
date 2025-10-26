@@ -53,6 +53,6 @@
 		zip unzip
 	];
 
-	nix.package = pkgs.lix;
+	nix.package = pkgs.lixPackageSets.latest.lix;
 }
 
