@@ -71,14 +71,7 @@
 	environment.systemPackages = with pkgs; [
 		grim
 		waybar
-		(wbg.overrideAttrs (oa: {
-			patches = (oa.patches or []) ++ [
-				(fetchpatch {
-					url = "https://codeberg.org/dnkl/wbg/commit/d687493c7cbc3d112db6030ec786b4b719ba075d.patch";
-					hash = "sha256-ZFrTA2ajy9kHfzEIaX7yqRlw1cFM/kMSUIGY46zmFf8=";
-				})
-			];
-		}))
+		wbg
 		synapse
 
 		vanilla-dmz
