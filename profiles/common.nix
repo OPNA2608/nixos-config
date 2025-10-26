@@ -58,5 +58,10 @@
     unzip
   ];
 
-  nix.package = pkgs.lixPackageSets.latest.lix;
+  nix = {
+    package = pkgs.lixPackageSets.latest.lix;
+    settings.trusted-users = [
+      "@wheel"
+    ];
+  };
 }
