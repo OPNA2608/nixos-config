@@ -67,8 +67,8 @@ in
         ];
       })
     */
-    duckstation
 
+    gnome-calendar
     protonmail-bridge
   ];
 
@@ -143,7 +143,7 @@ in
 
   # Overriding profiles/desktop.nix, I want to try using Lomiri & Miriway
   services.desktopManager.lomiri.enable = true;
-  services.xserver.desktopManager.pantheon.enable = lib.mkForce false;
+  services.desktopManager.pantheon.enable = lib.mkForce false;
   services.displayManager.defaultSession = lib.mkForce "lomiri";
   services.xserver.displayManager.lightdm.greeters = {
     pantheon.enable = lib.mkForce false;
