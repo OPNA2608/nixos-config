@@ -59,7 +59,7 @@ in
   boot.plymouth.enable = lib.mkForce false;
 
   # waking from suspend is broken, remove one source of unintentional suspends
-  services.logind.lidSwitch = "lock";
+  services.logind.settings.Login.HandleLidSwitch = "lock";
 
   console.keyMap = "us";
   services.xserver.xkb.layout = "us";
