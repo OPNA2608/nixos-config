@@ -39,12 +39,12 @@
         end
         set_color normal
       end
-    '';
-    shellInit = ''
-      # This must've changed at some point, and Alt-Backspace backward-kills entire tokens now?
-      # Please go back :(
-      bind --erase --preset alt-backspace
-      bind --preset alt-backspace backward-kill-word
+
+      # This must've changed at some point.
+      # Alt-Backspace backward-kills entire tokens by default now, and Ctrl-Backspace only deletes a single char.
+      # Please go back... :(
+      bind --erase alt-backspace
+      bind --user alt-backspace backward-kill-word
     '';
   };
   programs.bash.promptInit = ''
