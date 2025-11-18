@@ -14,6 +14,8 @@
     ./ssh.nix
     ./time.nix
     ./vim.nix
+
+    ../users/root.nix
   ];
 
   console = {
