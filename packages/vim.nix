@@ -3,7 +3,7 @@ with import <nixpkgs> {
   config.vim.ftNix = false;
 };
 
-vim_configurable.customize {
+vim-full.customize {
   name = "vim";
   vimrcConfig = {
     customRC = builtins.readFile ./vimrc;
