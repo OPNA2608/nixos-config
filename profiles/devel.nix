@@ -8,6 +8,7 @@
     editorconfig-checker
     gh
     gitFull
+    nix-output-monitor
     nixfmt-rfc-style
     lixPackageSets.latest.nixpkgs-review
     pre-commit
