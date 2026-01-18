@@ -26,11 +26,6 @@
     };
   };
 
-  # audio setup
-  hardware.pulseaudio.extraConfig = ''
-    load-module module-native-protocol-unix auth-group=qemu-libvirtd socket=/tmp/pulse-socket
-  '';
-
   environment.systemPackages = with pkgs; [
     virt-manager
   ];

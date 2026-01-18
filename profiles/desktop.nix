@@ -21,13 +21,6 @@ in
     ./fonts.nix
   ];
 
-  /*
-    hardware.pulseaudio = {
-      enable = true;
-      support32Bit = true;
-    };
-  */
-
   services.xserver = {
     enable = true;
     displayManager.lightdm = {
@@ -54,6 +47,7 @@ in
     ++ (with pkgs; [
       geary
     ]);
+
   programs.evince.enable = false; # atril
 
   services.gnome.gnome-keyring.enable = true;

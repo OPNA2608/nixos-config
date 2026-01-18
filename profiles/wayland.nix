@@ -10,13 +10,6 @@
     ./fonts.nix
   ];
 
-  /*
-    hardware.pulseaudio = {
-      enable = true;
-      support32Bit = true;
-    };
-  */
-
   security.pam.services.gtklock = { };
 
   services.xserver = {
