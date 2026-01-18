@@ -48,6 +48,11 @@ in
       geary
     ]);
 
+  # https://github.com/NixOS/nixpkgs/commit/10cea96468c86e915d18b07306fb3308f1a810a9
+  xdg.portal.extraPortals = [
+    pkgs.pantheon.xdg-desktop-portal-pantheon
+  ];
+
   programs.evince.enable = false; # atril
 
   services.gnome.gnome-keyring.enable = true;
