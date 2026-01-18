@@ -11,6 +11,7 @@
 
 let
   nixpkgs-unstable = import <unstable> { };
+  nixpkgs-coolercontrol = nixpkgs-unstable;
 in
 {
   networking.hostName = "Carlos";
@@ -85,6 +86,11 @@ in
           });
         }
       );
+    })
+
+    # Latest coolercontrol. Allows testing of bumps.
+    (final: prev: {
+      inherit (nixpkgs-coolercontrol) coolercontrol;
     })
   ];
 
@@ -173,6 +179,9 @@ in
     # Clickable needs to be latest one
     nixpkgs-unstable.clickable
     xorg.xhost
+
+    # Comment/Uncomment to force diff to prev gen, to be able to clean it up from boot loader
+    hello
   ];
 
   # https://github.com/NixOS/nixpkgs/issues/274999 debugging
@@ -198,4 +207,7 @@ in
   # For clickable to work
   virtualisation.docker.enable = true;
   users.users.puna.extraGroups = [ "docker" ];
+
+  # Hytale
+  services.flatpak.enable = true;
 }
