@@ -12,6 +12,7 @@
 let
   nixpkgs-unstable = import <unstable> { };
   nixpkgs-coolercontrol = nixpkgs-unstable;
+  lime-juice = pkgs.callPackage ../../packages/lime-juice.nix { };
   pc98-disk-tools = pkgs.callPackage ../../packages/pc98-disk-tools.nix { };
 in
 {
@@ -116,6 +117,7 @@ in
       pkgs.unrar.meta.description
       pkgs.logmein-hamachi.meta.description
       #((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
+      lime-juice.meta.description
       pc98-disk-tools.meta.description
     ]
   );
@@ -182,6 +184,8 @@ in
     nixpkgs-unstable.clickable
     xorg.xhost
 
+    # PC-98 stuff
+    lime-juice
     pc98-disk-tools
 
     # Comment/Uncomment to force diff to prev gen, to be able to clean it up from boot loader
