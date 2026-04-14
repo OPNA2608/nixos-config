@@ -24,6 +24,81 @@
     packages = with pkgs; [ gohufont ];
   };
   services.gpm.enable = true;
+  services.getty.extraArgs =
+    let
+      colours = [
+        {
+          index = 0;
+          rrggbb = "FFFFEA";
+        }
+        {
+          index = 1;
+          rrggbb = "966966";
+        }
+        {
+          index = 2;
+          rrggbb = "557A53";
+        }
+        {
+          index = 3;
+          rrggbb = "736D4E";
+        }
+        {
+          index = 4;
+          rrggbb = "5A7084";
+        }
+        {
+          index = 5;
+          rrggbb = "6B6A8F";
+        }
+        {
+          index = 6;
+          rrggbb = "507676";
+        }
+        {
+          index = 7;
+          rrggbb = "000000";
+        }
+        {
+          index = 8;
+          rrggbb = "757655";
+        }
+        {
+          index = 9;
+          rrggbb = "843530";
+        }
+        {
+          index = 10;
+          rrggbb = "235920";
+        }
+        {
+          index = 11;
+          rrggbb = "5A4F16";
+        }
+        {
+          index = 12;
+          rrggbb = "2A5175";
+        }
+        {
+          index = 13;
+          rrggbb = "4A488A";
+        }
+        {
+          index = 14;
+          rrggbb = "1F5757";
+        }
+        {
+          index = 15;
+          rrggbb = "FFFFEA";
+        }
+      ];
+    in
+    [
+      "-I"
+      "${lib.strings.concatMapStrings (
+        colorData: "\\033]P${lib.trivial.toHexString colorData.index}${colorData.rrggbb}"
+      ) colours}"
+    ];
 
   programs.less = {
     enable = true;
