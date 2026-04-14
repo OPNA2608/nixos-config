@@ -107,19 +107,25 @@ in
   # selectively allow unfree stuff
   nixpkgs.config.allowUnfreePredicate = (
     pkg:
-    builtins.elem pkg.meta.description [
-      pkgs.corefonts.meta.description
-      pkgs.discord.meta.description
-      pkgs.input-fonts.meta.description
-      pkgs.steam-unwrapped.meta.description
-      pkgs.steam.meta.description
-      pkgs.steam.run.meta.description
-      pkgs.unrar.meta.description
-      pkgs.logmein-hamachi.meta.description
-      #((pkgs.callPackage ../../packages/katawa-shoujo.nix {}).meta.description)
-      lime-juice.meta.description
-      pc98-disk-tools.meta.description
-    ]
+    builtins.elem pkg.meta.description (
+      builtins.map (thisPkg: thisPkg.meta.description) (
+        (with pkgs; [
+          corefonts
+          discord
+          input-fonts
+          steam-unwrapped
+          steam
+          steam.run
+          unrar
+          logmein-hamachi
+          #((callPackage ../../packages/katawa-shoujo.nix {}))
+        ])
+        ++ [
+          lime-juice
+          pc98-disk-tools
+        ]
+      )
+    )
   );
 
   # extra filesystems
